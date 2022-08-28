@@ -2,7 +2,7 @@
 </script>
 
 <template>
-	<div class="welcome">welcome</div>
+	<div class="total">Total</div>
 </template>
 
 <style scoped lang="scss">

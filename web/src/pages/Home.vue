@@ -1,14 +1,7 @@
 <script setup>
-import { test } from '../api/index.js'
 import storage  from '../utils/storage.js'
 import LeftNav from '../components/LeftNav.vue'
 import BreadCrumb from '../components/BreadCrumb.vue'
-
-test().then((res)=>{
-	console.log(res)
-})
-storage.setItem('test1', {value: 2})
-console.log(storage.getItem('test'))
 </script>
 
 <template>
@@ -35,6 +28,7 @@ console.log(storage.getItem('test'))
 	display: flex;
 	.nav-side {
 		height: 100vh;
+		width: 230px;
 	}
 	.content-right {
 		height: 100%;

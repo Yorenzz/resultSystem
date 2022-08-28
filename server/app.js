@@ -3,15 +3,19 @@ const app = new Koa()
 const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
+const cors = require('koa2-cors')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-
+const jwt = require('koa-jwt')
 const index = require('./routes/index')
 const users = require('./routes/users')
+const util = require('./utils/util')
+const log4js = require('./utils/log4j')
 
 // error handler
 onerror(app)
 
+app.use(cors())
 // middlewares
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
@@ -26,11 +30,21 @@ app.use(views(__dirname + '/views', {
 
 // logger
 app.use(async (ctx, next) => {
-  const start = new Date()
-  await next()
-  const ms = new Date() - start
-  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+  log4js.info(`get params:${JSON.stringify(ctx.request.query)}`)
+  log4js.info(`post params:${JSON.stringify(ctx.request.body)}`)
+  await next().catch((err) => {
+    if (err.status === '401') {
+      ctx.status = 200;
+      ctx.body = util.fail('Token认证失败', util.CODE.AUTH_ERROR)
+    } else {
+      throw err;
+    }
+  })
 })
+
+app.use(jwt({ secret: 'Yorenz' }).unless({
+  path: [/^\/users\/login/]
+}))
 
 // routes
 app.use(index.routes(), index.allowedMethods())

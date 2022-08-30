@@ -20,8 +20,6 @@ service.interceptors.response.use(res => {
   const { code, data, msg } = res.data
   console.log(res.data, '1')
   if (code === 200) {
-    // storage.setItem('XToken', res)
-    // console.log(storage.getItem('XToken'))
     ElMessage.success(msg)
     return data
   } else if (code === 40001) {

@@ -4,7 +4,7 @@ const EnvConfig = {
     baseApi: 'http://localhost:3000',
   },
   prod: {
-    baseApi: '/',
+    baseApi: 'http://175.178.115.221:3000',
   },
 }
 

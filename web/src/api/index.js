@@ -10,3 +10,10 @@ export const Login = (username, password) => {
     },
   })
 }
+
+export const getStudentInformation = () => {
+  return request({
+    method: 'GET',
+    url: '/student/getStudentInformation'
+  })
+}

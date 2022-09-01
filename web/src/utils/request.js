@@ -3,6 +3,7 @@ import config from '../config/index.js'
 import { ElMessage } from 'element-plus'
 import router from '../router/index.js'
 import storage from './storage.js'
+import {TOKEN_KEY} from '../config'
 
 const service = axios.create({
   baseURL: config.baseApi,
@@ -12,7 +13,8 @@ const service = axios.create({
 service.interceptors.request.use(req => {
   // TODO
   const headers = req.headers
-  if (!headers.Authorization) headers.Authorization = 'Bear Jack'
+  const token = storage.getItem(TOKEN_KEY)
+  if (!headers.Authorization) headers.Authorization = `Bearer ${token}`
   return req
 })
 
@@ -20,7 +22,7 @@ service.interceptors.response.use(res => {
   const { code, data, msg } = res.data
   console.log(res.data, '1')
   if (code === 200) {
-    ElMessage.success(msg)
+    // ElMessage.success(msg)
     return data
   } else if (code === 40001) {
     ElMessage.error(msg || 'Token验证失败')

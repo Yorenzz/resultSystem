@@ -48,25 +48,16 @@ const collapse = ref(false)
                 <el-icon><location /></el-icon>
                 <span>管理学生信息</span>
             </template>
-            <el-menu-item index="/student-information">item one</el-menu-item>
-            <el-menu-item index="8-2">item two</el-menu-item>
+            <el-menu-item index="/student-information">查看学生信息</el-menu-item>
+            <el-menu-item index="/student-information-edit">编辑学生信息</el-menu-item>
         </el-sub-menu>
     </el-menu>
 </template>
 
 <style scoped lang="scss">
 .el-menu-left {
-    height: 100%;
+    width: 100%;
     border: none;
-    .collapse-button {
-        flex: 1;
-        width: 100%;
-        height: 50px;
-        background: #545c64;
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+    height: 100%;
 }
 </style>

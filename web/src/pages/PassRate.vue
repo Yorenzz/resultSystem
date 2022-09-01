@@ -2,6 +2,7 @@
 </script >
 
 <template >
+    passrate
 </template >
 
 <style scoped >

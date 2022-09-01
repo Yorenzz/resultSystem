@@ -2,7 +2,7 @@
 </script >
 
 <template >
-    upload
+    edit
 </template >
 
 <style scoped >

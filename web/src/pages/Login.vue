@@ -41,7 +41,7 @@ const submit = () => {
           console.log(res, 'login')
           const { username, role, token } = res
           store.saveUserInfo(username, role, token)
-          router.push('/total')
+          router.push('/')
         })
         .catch(err => {
           // console.log(err)

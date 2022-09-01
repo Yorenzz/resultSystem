@@ -2,6 +2,7 @@
 </script >
 
 <template >
+    result
 </template >
 
 <style scoped >

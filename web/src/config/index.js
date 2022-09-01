@@ -1,4 +1,5 @@
 const env = import.meta.env.MODE || 'prod'
+export const TOKEN_KEY = 'XToken'
 const EnvConfig = {
   dev: {
     baseApi: 'http://localhost:3000',

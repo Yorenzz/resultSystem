@@ -2,6 +2,7 @@
 </script >
 
 <template >
+    rank
 </template >
 
 <style scoped >

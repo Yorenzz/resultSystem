@@ -9,6 +9,7 @@ const logger = require('koa-logger')
 const jwt = require('koa-jwt')
 const index = require('./routes/index')
 const users = require('./routes/users')
+const student = require('./routes/student')
 const util = require('./utils/util')
 const log4js = require('./utils/log4j')
 
@@ -49,6 +50,7 @@ app.use(jwt({ secret: 'Yorenz' }).unless({
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
+app.use(student.routes(), student.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {

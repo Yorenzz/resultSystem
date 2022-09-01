@@ -2,6 +2,7 @@
 </script >
 
 <template >
+    range
 </template >
 
 <style scoped >

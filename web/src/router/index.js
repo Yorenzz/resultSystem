@@ -74,6 +74,14 @@ const routes = [
                 path: '/student-information',
                 component: () => import('../pages/StudentInformation.vue'),
                 meta: {
+                    title: '查看学生信息',
+                },
+            },
+            {
+                name: 'studentInformationEdit',
+                path: '/student-information-edit',
+                component: () => import('../pages/StudentInformationEdit.vue'),
+                meta: {
                     title: '管理学生信息',
                 },
             },
@@ -106,6 +114,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     document.title = to.meta.title
     const hasToken = getToken()
+    console.log(hasToken);
     if (hasToken) {
         if (to.path === '/login') {
             next('/')

@@ -5,6 +5,8 @@ export default {
 	getItem(key) {
 		return JSON.parse(window.localStorage.getItem(key))
 	},
-	clearItem() {},
+	clearItem(key) {
+		window.localStorage.removeItem(key)
+	},
 	clearAll() {}
 }

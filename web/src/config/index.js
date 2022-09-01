@@ -6,10 +6,10 @@ const EnvConfig = {
   prod: {
     baseApi: 'http://175.178.115.221:3000',
   },
+  production: 'http://175.178.115.221:3000'
 }
 
 export default {
   env,
-  mock: false,
   ...EnvConfig[env],
 }

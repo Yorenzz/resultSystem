@@ -2,64 +2,8 @@
     import { ref } from 'vue';
     import { getStudentInformation } from '../api'
     
-    const data = [
-  {
-    label: '初一',
-    children: [
-      {
-        label: 'Level two 1-1',
-        children: [
-          {
-            label: 'Level three 1-1-1',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    label: '初二',
-    children: [
-      {
-        label: 'Level two 2-1',
-        children: [
-          {
-            label: 'Level three 2-1-1',
-          },
-        ],
-      },
-      {
-        label: 'Level two 2-2',
-        children: [
-          {
-            label: 'Level three 2-2-1',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    label: '初三',
-    children: [
-      {
-        label: 'Level two 3-1',
-        children: [
-          {
-            label: 'Level three 3-1-1',
-          },
-        ],
-      },
-      {
-        label: 'Level two 3-2',
-        children: [
-          {
-            label: 'Level three 3-2-1',
-          },
-        ],
-      },
-    ],
-  },
-]
     const tableData = ref([])
+    const studentTable=ref(null)
     const column = [
         {
             prop: 'StudentId',
@@ -79,21 +23,20 @@
         },
     ]
     getStudentInformation().then( res => {
-        console.log(res);
-        tableData.value = res
+        const { studentList } = res
+        tableData.value = studentList
     })
     </script >
     
     <template >
-        <div class="tree-content">
-            <el-tree :data="data" :props="defaultProps" />
-        </div>
+      <div class="student-content">
         <div class="table-content">
             <el-table
+                ref="studentTable"
                 :data="tableData"
                 border
                 stripe
-                max-height="700px"
+                max-height="780px"
             >
                 <template 
                     v-for="item in column"
@@ -104,15 +47,19 @@
                     />
                 </template>
             </el-table>
-        </div>
+        </div>        
+      </div>
+
     </template >
     
     <style scoped lang="scss">
-        .tree-content {
-            width: 400px;
-        }
+      .student-content {
+        display: flex;
         .table-content {
-            width: 600px;
-        }
+            width: 500px;
+            margin: 32px;
+        }        
+      }
+
     </style >
     

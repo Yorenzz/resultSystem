@@ -17,3 +17,19 @@ export const getStudentInformation = () => {
     url: '/student/getStudentInformation'
   })
 }
+
+export const searchStudent = (keyword) => {
+  return request({
+    method: 'GET',
+    url: '/student/remoteSearchStudent',
+    data: { keyword }
+  })
+}
+
+export const studentResult = (id) => {
+  return request({
+    method: 'GET',
+    url: '/student/studentResult',
+    data: { id }
+  })
+}

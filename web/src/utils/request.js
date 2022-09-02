@@ -11,7 +11,6 @@ const service = axios.create({
 })
 
 service.interceptors.request.use(req => {
-  // TODO
   const headers = req.headers
   const token = storage.getItem(TOKEN_KEY)
   if (!headers.Authorization) headers.Authorization = `Bearer ${token}`
@@ -20,9 +19,7 @@ service.interceptors.request.use(req => {
 
 service.interceptors.response.use(res => {
   const { code, data, msg } = res.data
-  console.log(res.data, '1')
   if (code === 200) {
-    // ElMessage.success(msg)
     return data
   } else if (code === 40001) {
     ElMessage.error(msg || 'Token验证失败')

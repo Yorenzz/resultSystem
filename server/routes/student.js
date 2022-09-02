@@ -1,11 +1,61 @@
 const router = require('koa-router')()
-const { getStudent } = require('../server/student')
+const { getStudent, getClass, getResult } = require('../server/student')
 const utils = require('../utils/util')
 router.prefix('/student')
 
-router.get('/getStudentInformation', async function (ctx, next) {
-    const res = await getStudent()
-    console.log(res instanceof Array)
+router.get('/getStudentInformation', async (ctx, next) => {
+    const studentList = await getStudent()
+    const classOneList = await getClass(1)
+    const classTwoList = await getClass(2)
+    const classThreeList = await getClass(3)
+
+    const formatClass = async (list, grade) => {
+        const tempList = []
+        const classList = ['零', '一', '二', '三', '四', '五', '六']
+        list.map((item) => {
+            tempList.push({ label: `${classList[item.Class]}班`, children: [] })
+        })
+        for(const item of tempList){
+            const studentPerList = await getStudent(grade, classList.indexOf(item.label.slice(0, 1)))
+            for(const temp of studentPerList){
+                temp.label = temp.Name
+                item.children.push(temp)
+            }
+            // console.log(item);
+        }
+        return tempList
+    }
+
+    const one = await formatClass(classOneList, 1)
+    const two = await formatClass(classTwoList, 2)
+    const three = await formatClass(classThreeList, 3)
+    const treeData=[
+        {
+            label: '初一',
+            children: one
+        }, 
+        {
+            label: '初二',
+            children: two
+        }, 
+        {
+            label: '初三',
+            children: three
+        }
+    ]
+    // console.log(treeData);
+    ctx.body = utils.success({ studentList, treeData })
+})
+
+router.get('/remoteSearchStudent', async (ctx, next) => {
+    console.log(ctx.request.query);
+    ctx.body = utils.success('test')
+})
+
+router.get('/studentResult', async (ctx, next) => {
+    const { id } = ctx.request.query
+    const res = await getResult(id)
+    console.log(res);
     ctx.body = utils.success(res)
 })
 

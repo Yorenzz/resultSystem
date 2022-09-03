@@ -25,6 +25,7 @@
     "log4js": "^6.6.1",
     "md5": "^2.3.0",
     "mysql": "^2.18.1",
+    "prettier": "^2.7.1",
     "pug": "^2.0.3"
   },
   "devDependencies": {

@@ -77,7 +77,9 @@ const submit = () => {
       </el-form-item>
       <el-form-item>
         <div class="button-item">
-          <el-button type="primary" @click="submit">登录</el-button>
+          <el-button type="primary" @click="submit"
+            >登录</el-button
+          >
           <el-button>注册</el-button>
         </div>
       </el-form-item>

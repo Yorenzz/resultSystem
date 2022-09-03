@@ -10,8 +10,8 @@ const store = userInfoStore()
 const router = useRouter()
 const userForm = ref(null)
 const userData = reactive({
-  username: '',
-  password: '',
+  username: 'youlian',
+  password: 'youlian',
 })
 const usernameRule = (rule, value, callback) => {
   if (value === '') {

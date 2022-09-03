@@ -41,4 +41,7 @@ export const SUBJECT_TRANSLATE = {
     Chemistry: '化学',
     Biology: '生物',
     Geography: '地理',
+    Total: '总分',
+    Composite: '综合',
+    Sport: '体育',
 }

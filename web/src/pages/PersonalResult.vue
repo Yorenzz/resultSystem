@@ -2,16 +2,21 @@
 import { reactive, ref, watch, watchEffect } from 'vue';
 import { studentResult } from '../api'
 import StudentTree from '../components/StudentTree.vue'
+import SubjectScore from '../components/SubjectScore.vue'
+import { GRADE_ONE_SUBJECT } from '../constant/index.js'
 
 const loading = reactive({
     result: false
 })
+
+let scoreList = reactive({})
 
 const selectID = ref(null)
 
 const getResult = (id) => {
     studentResult(id).then((res) => {
         console.log(res);
+				scoreList =  Object.assign(scoreList, res[0])
     })
 }
 
@@ -22,17 +27,24 @@ watchEffect(()=>{
     }
 })
 </script >
-    
+
 <template >
     <div class="result-content">
-        <StudentTree 
+        <StudentTree
             v-model:student="selectID"
         />
         <div
             v-if="selectID"
             class="result"
         >
-            {{ selectID }}
+            <template
+							v-for="(value, key) in scoreList"
+						>
+							<SubjectScore
+								:score="value"
+								:subject="key"
+							/>
+						</template>
         </div>
         <div
             v-else
@@ -42,7 +54,7 @@ watchEffect(()=>{
         </div>
     </div>
 </template >
-    
+
     <style scoped lang="scss">
       .result-content {
         display: flex;
@@ -51,8 +63,8 @@ watchEffect(()=>{
             display: flex;
             justify-content: center;
             align-items: center;
+					flex-wrap: wrap;
         }
       }
 
     </style >
-    

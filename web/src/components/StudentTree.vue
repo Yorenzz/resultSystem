@@ -4,7 +4,7 @@ import { getStudentInformation, searchStudent } from '../api'
 
 const props=defineProps({
     student: {
-        type: Number,
+        type: [Number, null],
         default: null,
     }
 })
@@ -83,9 +83,9 @@ getTreeData()
                             </div>
                         </template>
                     </el-tree>
-                </el-scrollbar>                
+                </el-scrollbar>
             </div>
-          </div> 
+          </div>
 </template >
 
 <style scoped lang="scss">
@@ -103,5 +103,5 @@ getTreeData()
     }
     .tree {
     }
-}  
+}
 </style >

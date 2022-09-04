@@ -1,4 +1,4 @@
-export const GRADE_ONE_SUBJECT = {
+export const GRADE_SUBJECT = {
   ONE: [
     'Chinese',
     'Math',

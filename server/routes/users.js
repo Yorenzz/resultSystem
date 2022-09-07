@@ -1,4 +1,4 @@
-const { Login, Register } = require('../server/user')
+const { Login, Register, isHaveUsername } = require('../server/user')
 const md5 = require('md5')
 const utils = require('../utils/util')
 const jwt = require('jsonwebtoken')
@@ -49,9 +49,14 @@ router.get('/verify', async (ctx, next) => {
 router.post('/register', async function (ctx, next) {
   console.log(ctx.request.body)
   const { username, password } = ctx.request.body
-  const res = await Register(username, md5(password))
-  console.log(res)
-  ctx.body = res
+  const isHave = await isHaveUsername(username)
+  if(isHave[0].isHave){
+    ctx.body = utils.fail('用户名已存在！')
+  } else {
+    const res = await Register(username, md5(password))
+    console.log(res)
+    ctx.body = utils.success(res, '注册成功！请点击按钮返回登录...')    
+  }
 })
 
 module.exports = router

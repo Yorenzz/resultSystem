@@ -41,3 +41,11 @@ export const studentResult = (id) => {
     data: { id }
   })
 }
+
+export const register = (username, password) => {
+  return request({
+    method: 'POST',
+    url: '/users/register',
+    data: { username, password }
+  })
+}

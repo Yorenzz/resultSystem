@@ -9,15 +9,11 @@ import { verify } from '../api/index.js'
 
 const whiteList = ['/login', '/auth-redirect', '/register']
 
-
 const routes = [
   {
     name: 'home',
     path: '/',
     component: () => import('../pages/Home.vue'),
-    meta: {
-      title: '首页',
-    },
     redirect: '/total',
     children: [
       {
@@ -25,7 +21,7 @@ const routes = [
         path: '/total',
         component: () => import('../pages/Total.vue'),
         meta: {
-          title: '总览',
+          title: '首页',
         },
       },
       {
@@ -83,19 +79,31 @@ const routes = [
         name: 'studentInformation',
         path: '/student-information',
         component: () =>
-          import('../pages/StudentInformation.vue'),
+          import('../pages/student-information/index.vue'),
         meta: {
-          title: '查看学生信息',
+          title: '学生信息',
         },
-      },
-      {
-        name: 'studentInformationEdit',
-        path: '/student-information-edit',
-        component: () =>
-          import('../pages/StudentInformationEdit.vue'),
-        meta: {
-          title: '管理学生信息',
-        },
+        redirect: '/student-information/view-information',
+        children: [
+            {
+                name: 'viewStudentInformation',
+                path: 'view-information',
+                component: () =>
+                  import('../pages/student-information/StudentInformation.vue'),
+                meta: {
+                  title: '查看学生信息',
+                },
+            },
+            {
+                name: 'studentInformationEdit',
+                path: 'edit-information',
+                component: () =>
+                    import('../pages/student-information/StudentInformationEdit.vue'),
+                meta: {
+                    title: '编辑学生信息',
+                },
+            },
+        ]
       },
     ],
   },

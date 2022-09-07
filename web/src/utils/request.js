@@ -21,6 +21,7 @@ service.interceptors.request.use(req => {
 service.interceptors.response.use(res => {
   const { code, data, msg } = res.data
   if (code === 200) {
+    msg && ElMessage.success(msg)
     return data
   } else if (code === 40001) {
     ElMessage.error(msg || 'Token验证失败')

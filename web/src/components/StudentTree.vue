@@ -32,7 +32,6 @@ const treeRef = ref(null)
 const handleNodeClick = data => {
   // console.log('data', data);
   if (data?.StudentId) {
-    console.log('1', typeof data?.StudentId)
     selectStudent.value = data.StudentId
     emit('update:student', selectStudent.value)
   }
@@ -65,7 +64,6 @@ const getTreeData = () => {
   loading.tree = true
   getStudentInformation()
     .then(res => {
-      // console.log(res);
       const { treeData } = res
       tree.value = treeData
     })

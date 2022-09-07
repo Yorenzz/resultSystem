@@ -46,7 +46,7 @@ const submit = () => {
         .catch(err => {
           // console.log(err)
         }).finally(()=>{
-          loading = false
+          loading.value = false
         })
     })
     .catch(() => {})

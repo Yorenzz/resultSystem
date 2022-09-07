@@ -51,7 +51,7 @@ app.use(async (ctx, next) => {
 
 app.use(
     jwt({ secret: 'Yorenz' }).unless({
-        path: [/^\/users\/login/],
+        path: [/^\/users\/login/, /^\/users\/register/],
     }),
 )
 

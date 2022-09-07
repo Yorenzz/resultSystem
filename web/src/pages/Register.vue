@@ -1,7 +1,7 @@
 <script setup >
 import { User, Lock } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
-import { Login } from '../api/index.js'
+import { register } from '../api/index.js'
 import { useRouter } from 'vue-router'
 import { userInfoStore } from '../store/index.js'
 
@@ -43,26 +43,19 @@ const rules = reactive({
   password: [{ validator: passwordRules, trigger: 'blur' }],
   passwordVerify: [{ validator: passwordVerifyRules, trigger: 'blur' }],
 })
-const submit = () => {
+const submitRegister = () => {
   userForm.value
     .validate()
     .then(() => {
-      console.log('success')
-      Login(userData.username, userData.password)
+      register(userData.username, userData.password)
         .then(res => {
-          console.log(res, 'login')
-          const { username, role, token } = res
-          store.saveUserInfo(username, role, token)
-          router.push('/')
+          
         })
         .catch(err => {
           // console.log(err)
         })
     })
     .catch(() => {})
-}
-const register = () => {
-  router.push('/register')
 }
 </script >
 
@@ -102,7 +95,7 @@ const register = () => {
       </el-form-item>
       <el-form-item>
         <div class="button-item">
-          <el-button @click="register">注册</el-button>
+          <el-button @click="submitRegister">注册</el-button>
           <el-button @click="router.push('/login')">返回登录</el-button>
         </div>
       </el-form-item>

@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, ref } from 'vue'
-import { getStudentInformation } from '../api'
+import { getStudentInformation } from '../../api'
 
 const tableData = ref([])
 const loading = reactive({

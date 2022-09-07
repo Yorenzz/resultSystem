@@ -24,7 +24,6 @@ const selectID = ref(null)
 
 const getResult = id => {
   studentResult(id).then(res => {
-    console.log(res)
     const { result, information } = res
     scoreList = Object.assign(scoreList, result[0])
     perInformation = Object.assign(
@@ -36,19 +35,17 @@ const getResult = id => {
 
 watchEffect(() => {
   if (selectID.value) {
-    console.log('type', typeof selectID.value)
     getResult(selectID.value)
   } else {
     perInformation = Object.assign(
       perInformation,
       {
-  Class: null,
-  Grade: null,
-  Name: '',
-  StudentId: null,
-}
+        Class: null,
+        Grade: null,
+        Name: '',
+        StudentId: null,
+      }
     )
-    console.log('12312');
   }
 })
 </script>

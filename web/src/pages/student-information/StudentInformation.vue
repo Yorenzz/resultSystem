@@ -9,20 +9,32 @@ const loading = reactive({
 const studentTable = ref(null)
 const column = [
   {
-    prop: 'StudentId',
-    label: '编号',
+    field: 'StudentId',
+    title: '编号',
+    slots: {
+      default: 'id',
+    },
   },
   {
-    prop: 'Name',
-    label: '名字',
+    field: 'Name',
+    title: '名字',
+    slots: {
+      default: 'name',
+    },
   },
   {
-    prop: 'Grade',
-    label: '年级',
+    field: 'Grade',
+    title: '年级',
+    slots: {
+      default: 'grade',
+    },
   },
   {
-    prop: 'Class',
-    label: '班级',
+    field: 'Class',
+    title: '班级',
+    slots: {
+      default: 'class',
+    },
   },
 ]
 const getInformation = () => {
@@ -45,21 +57,26 @@ getInformation()
 <template>
   <div class="student-content">
     <div class="table-content">
-      <el-table
-        ref="studentTable"
-        :data="tableData"
+      <vxe-grid
         border
-        stripe
-        max-height="780px"
-        v-loading="loading.table"
+        align="center"
+        :data="tableData"
+        :columns="column"
+        height="800px"
       >
-        <template v-for="item in column">
-          <el-table-column
-            :prop="item.prop"
-            :label="item.label"
-          />
+        <template #id="{ row }">
+          {{ row.StudentId }}
         </template>
-      </el-table>
+        <template #name="{ row }">
+          {{ row.Name }}
+        </template>
+        <template #grade="{ row }">
+          {{ row.Grade }}
+        </template>
+        <template #class="{ row }">
+          {{ row.Class }}
+        </template>
+      </vxe-grid>
     </div>
   </div>
 </template>

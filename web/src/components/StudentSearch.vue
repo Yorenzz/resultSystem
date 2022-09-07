@@ -12,7 +12,7 @@ const props = defineProps({
 const emit = defineEmits(['update:student'])
 
 const search = reactive({
-  studentID: '',
+  studentID: null,
   searchList: [],
 })
 const loading = reactive({
@@ -21,7 +21,12 @@ const loading = reactive({
 })
 const handleChange = () => {
   console.log(1)
-  emit('update:student', search.studentID)
+  if(!search.studentID){
+    emit('update:student', null)
+  } else {
+    emit('update:student', search.studentID)
+  }
+  
 }
 const remoteMethod = keyword => {
   console.log(keyword)

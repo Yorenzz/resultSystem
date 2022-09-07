@@ -11,6 +11,14 @@ export const Login = (username, password) => {
   })
 }
 
+export const verify = (token) => {
+  return request({
+    method: 'GET',
+    url: '/users/verify',
+    data: { token }
+  })
+}
+
 export const getStudentInformation = () => {
   return request({
     method: 'GET',

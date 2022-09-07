@@ -13,7 +13,12 @@ const loading = reactive({
 })
 
 let scoreList = reactive({})
-let perInformation = reactive({})
+let perInformation = reactive({
+  Class: null,
+  Grade: null,
+  Name: '',
+  StudentId: null,
+})
 
 const selectID = ref(null)
 
@@ -33,6 +38,17 @@ watchEffect(() => {
   if (selectID.value) {
     console.log('type', typeof selectID.value)
     getResult(selectID.value)
+  } else {
+    perInformation = Object.assign(
+      perInformation,
+      {
+  Class: null,
+  Grade: null,
+  Name: '',
+  StudentId: null,
+}
+    )
+    console.log('12312');
   }
 })
 </script>

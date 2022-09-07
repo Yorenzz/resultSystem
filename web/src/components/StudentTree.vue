@@ -80,8 +80,12 @@ const getTreeData = () => {
 getTreeData()
 
 watch(searchStudentID, val => {
-  console.log(1, typeof val)
-  searchChange(val)
+  if(val){
+    console.log(1, typeof val)
+    searchChange(val)
+  } else {
+    emit('update:student', null)
+  }
 })
 </script>
 

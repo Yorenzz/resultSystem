@@ -1,18 +1,17 @@
-<script setup>
+<script setup >
 import { User, Lock } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
 import { Login } from '../api/index.js'
 import { useRouter } from 'vue-router'
-import storage from '../utils/storage.js'
 import { userInfoStore } from '../store/index.js'
 
 const store = userInfoStore()
 const router = useRouter()
 const userForm = ref(null)
-const loading = ref(false)
 const userData = reactive({
-  username: 'youlian',
-  password: 'youlian',
+  username: '',
+  password: '',
+  passwordVerify: '',
 })
 const usernameRule = (rule, value, callback) => {
   if (value === '') {
@@ -28,25 +27,36 @@ const passwordRules = (rule, value, callback) => {
     callback()
   }
 }
+
+const passwordVerifyRules = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请输入密码'))
+  } else if(value !== userData.password) {
+    callback(new Error('两次输入密码不一致！'))
+  } else {
+    callback()
+  }
+}
+
 const rules = reactive({
   username: [{ validator: usernameRule, trigger: 'blur' }],
   password: [{ validator: passwordRules, trigger: 'blur' }],
+  passwordVerify: [{ validator: passwordVerifyRules, trigger: 'blur' }],
 })
 const submit = () => {
-  loading.value = true
   userForm.value
     .validate()
     .then(() => {
+      console.log('success')
       Login(userData.username, userData.password)
         .then(res => {
+          console.log(res, 'login')
           const { username, role, token } = res
           store.saveUserInfo(username, role, token)
           router.push('/')
         })
         .catch(err => {
           // console.log(err)
-        }).finally(()=>{
-          loading = false
         })
     })
     .catch(() => {})
@@ -54,10 +64,9 @@ const submit = () => {
 const register = () => {
   router.push('/register')
 }
-</script>
+</script >
 
-<template>
-  <div>
+<template >
     <el-form
       ref="userForm"
       label-suffix=":"
@@ -70,6 +79,7 @@ const register = () => {
           v-model="userData.username"
           class="input-item"
           :prefix-icon="User"
+          placeholder="用户名"
         />
       </el-form-item>
       <el-form-item prop="password">
@@ -78,23 +88,26 @@ const register = () => {
           class="input-item"
           :prefix-icon="Lock"
           show-password
+          placeholder="密码"
+        />
+      </el-form-item>
+      <el-form-item prop="passwordVerify">
+        <el-input
+          v-model="userData.passwordVerify"
+          class="input-item"
+          :prefix-icon="Lock"
+          show-password
+          placeholder="确认密码"
         />
       </el-form-item>
       <el-form-item>
         <div class="button-item">
-          <el-button
-            type="primary"
-            @click="submit"
-            :loading="loading"
-          >
-            登录
-          </el-button>
           <el-button @click="register">注册</el-button>
+          <el-button @click="router.push('/login')">返回登录</el-button>
         </div>
       </el-form-item>
     </el-form>
-  </div>
-</template>
+</template >
 
 <style scoped lang="scss">
 .form-content {
@@ -111,4 +124,4 @@ const register = () => {
     justify-content: center;
   }
 }
-</style>
+</style >

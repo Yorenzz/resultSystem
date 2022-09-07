@@ -27,6 +27,25 @@ router.post('/login', async function (ctx, next) {
   }
 })
 
+router.get('/verify', async (ctx, next) => {
+  const  { token } = ctx.request.query
+  let res = {
+    username: '',
+    role: '',
+  }
+  jwt.verify(token, 'Yorenz', (err, data)=>{
+    if(err){
+      console.log('e', err)
+    }
+    else {
+      console.log(data, 'data');
+      res.username = data.res[0].username
+      res.role = data.res[0].role
+    }
+  })
+  ctx.body = utils.success(res)
+})
+
 router.post('/register', async function (ctx, next) {
   console.log(ctx.request.body)
   const { username, password } = ctx.request.body

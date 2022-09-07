@@ -17,6 +17,7 @@ export const userInfoStore = defineStore('userInfo', {
       username: '',
       role: '',
       XToken: '' || storage.getItem('XToken'),
+      isFirst: 1,
     }
   },
   getters: {},
@@ -24,8 +25,7 @@ export const userInfoStore = defineStore('userInfo', {
     saveUserInfo(username, role, token) {
       this.username = username
       this.role = role
-      this.XToken = token
-      storage.setItem('XToken', this.XToken)
+      token && (this.XToken = token) && storage.setItem('XToken', this.XToken)
     },
   },
 })

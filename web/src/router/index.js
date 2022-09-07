@@ -4,8 +4,11 @@ import {
 } from 'vue-router'
 import { getToken } from '../utils/util.js'
 import { ElMessage } from 'element-plus'
+import { userInfoStore } from '../store'
+import { verify } from '../api/index.js'
 
-const whiteList = ['/login', '/auth-redirect']
+const whiteList = ['/login', '/auth-redirect', '/register']
+
 
 const routes = [
   {
@@ -105,6 +108,14 @@ const routes = [
     },
   },
   {
+    name: 'register',
+    path: '/register',
+    component: () => import('../pages/Register.vue'),
+    meta: {
+      title: '注册',
+    },
+  },
+  {
     path: '/404',
     name: '404',
     component: () => import('../components/404.vue'),
@@ -120,25 +131,54 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   document.title = to.meta.title
   const hasToken = getToken()
-  console.log(hasToken)
-  if (hasToken) {
-    if (to.path === '/login') {
-      next('/')
+  const store = userInfoStore()
+  if(store.isFirst === 1){
+    if (hasToken) {
+      const { username, role } = await verify(hasToken)
+      if(username){
+        store.saveUserInfo(username, role)
+        if (to.path === '/login') {
+            next('/')
+        } else {
+            next()
+        }
+      } else {
+        if (whiteList.indexOf(to.path) !== -1) {
+            next()
+          } else {
+            ElMessage.error('验证失败')
+            next({path: '/login', query: {redirect: to.path}})
+          }
+      }
     } else {
-      next()
+        if (whiteList.indexOf(to.path) !== -1) {
+          next()
+        } else {
+          ElMessage.error('登录失效')
+          next(`/login?redirect=${to.path}`)
+        }
     }
+    store.isFirst++
   } else {
-    if (whiteList.indexOf(to.path) !== -1) {
-      console.log(1)
-      next()
-    } else {
-      ElMessage.error('登录失效')
-      next(`/login?redirect=${to.path}`)
+    if (hasToken) {
+        if (to.path === '/login') {
+            next('/')
+        } else {
+            next()
+        } 
+    }else {
+        if (whiteList.indexOf(to.path) !== -1) {
+            next()
+        } else {
+            ElMessage.error('验证失败')
+            next(`/login?redirect=${to.path}`)
+        }
     }
   }
+
 })
 
 export default router

@@ -1,7 +1,14 @@
 <script setup>
 import { reactive, ref } from 'vue'
-import { getStudentInformation, changeStudentInformation } from '../../api'
-import { CLASS_TRANSLATE, GRADE_SUBJECT, GRADE_TRANSLATE } from '../../constant';
+import {
+  getStudentInformation,
+  changeStudentInformation,
+} from '../../api'
+import {
+  CLASS_TRANSLATE,
+  GRADE_SUBJECT,
+  GRADE_TRANSLATE,
+} from '../../constant'
 
 const tableData = ref([])
 const ruleFormRef = ref(null)
@@ -50,12 +57,21 @@ const column = [
 ]
 
 const dataPass = (rule, value, callback) => {
-  const reg=/^[\u4E00-\u9FA5]+$/
-  if(value === null || value === editData.originalData){
+  const reg = /^[\u4E00-\u9FA5]+$/
+  if (
+    value === null ||
+    value === editData.originalData
+  ) {
     callback(new Error('请输入修改数据'))
-  } else if(editData.changeField === 'Name' && !reg.test(value)){
+  } else if (
+    editData.changeField === 'Name' &&
+    !reg.test(value)
+  ) {
     callback(new Error('请输入中文姓名！'))
-  } else if(editData.changeField !== 'Name' && isNaN(value - 0)) {
+  } else if (
+    editData.changeField !== 'Name' &&
+    isNaN(value - 0)
+  ) {
     callback(new Error('请输入整数数字！'))
   } else {
     callback()
@@ -63,11 +79,13 @@ const dataPass = (rule, value, callback) => {
 }
 
 const rules = reactive({
-  nowData: [{ validator: dataPass, trigger: 'blur' }]
+  nowData: [
+    { validator: dataPass, trigger: 'blur' },
+  ],
 })
 
 const editMode = () => {
-  if(isEdit){
+  if (isEdit) {
     editData = Object.assign(editData, {
       originalData: null,
       nowData: null,
@@ -85,7 +103,7 @@ const addMode = () => {
 
 const handleEditData = (row, column) => {
   const { field, title } = column
-  console.log(row, row[field]);
+  console.log(row, row[field])
   editData.originalData = row[field]
   editData.originalAll = row
   editData.changeField = field
@@ -94,25 +112,30 @@ const handleEditData = (row, column) => {
 }
 
 const editSubmit = () => {
-  console.log(1);
-  ruleFormRef.value.validate().then(()=>{
-    console.log(2);
+  console.log(1)
+  ruleFormRef.value.validate().then(() => {
+    console.log(2)
     changeStudent()
   })
 }
 
 const changeStudent = () => {
   loading.button = true
-  changeStudentInformation(editData.originalAll.StudentId, 
-      editData.nowData, 
-      editData.changeField
-    ).then((res)=>{
-      console.log(res);
-  }).catch((e)=>{
-    console.warn(e);
-  }).finally(()=>{
-    loading.button = false
-  })
+  changeStudentInformation(
+    editData.originalAll.StudentId,
+    editData.nowData,
+    editData.changeField,
+  )
+    .then(res => {
+      console.log(res)
+      getInformation()
+    })
+    .catch(e => {
+      console.warn(e)
+    })
+    .finally(() => {
+      loading.button = false
+    })
 }
 
 const getInformation = () => {
@@ -145,53 +168,121 @@ getInformation()
         :loading="loading.table"
       >
         <template #id="{ row, column }">
-          <span v-if="!isEdit">{{ row.StudentId }}</span>
-          <el-button link type="primary" v-else @click="handleEditData(row, column)">{{ row.StudentId }}</el-button>
+          <span v-if="!isEdit">{{
+            row.StudentId
+          }}</span>
+          <el-button
+            link
+            type="primary"
+            v-else
+            @click="handleEditData(row, column)"
+            >{{ row.StudentId }}</el-button
+          >
         </template>
         <template #name="{ row, column }">
-          <span v-if="!isEdit">{{ row.Name }}</span>
-          <el-button link type="primary" v-else @click="handleEditData(row, column)">{{ row.Name }}</el-button>
+          <span v-if="!isEdit">{{
+            row.Name
+          }}</span>
+          <el-button
+            link
+            type="primary"
+            v-else
+            @click="handleEditData(row, column)"
+            >{{ row.Name }}</el-button
+          >
         </template>
         <template #grade="{ row, column }">
-          <span v-if="!isEdit">{{ row.Grade }}</span>
-          <el-button link type="primary" v-else @click="handleEditData(row, column)">{{ row.Grade }}</el-button>
+          <span v-if="!isEdit">{{
+            row.Grade
+          }}</span>
+          <el-button
+            link
+            type="primary"
+            v-else
+            @click="handleEditData(row, column)"
+            >{{ row.Grade }}</el-button
+          >
         </template>
         <template #class="{ row, column }">
-          <span v-if="!isEdit">{{ row.Class }}</span>
-          <el-button link type="primary" v-else @click="handleEditData(row, column)">{{ row.Class }}</el-button>
+          <span v-if="!isEdit">{{
+            row.Class
+          }}</span>
+          <el-button
+            link
+            type="primary"
+            v-else
+            @click="handleEditData(row, column)"
+            >{{ row.Class }}</el-button
+          >
         </template>
       </vxe-grid>
     </div>
     <div class="edit-content">
       <div>
-        <el-button type="primary" @click="editMode" :disabled="isAdd">
-          <span v-if="!isEdit">点击进入编辑模式</span>
+        <el-button
+          type="primary"
+          @click="editMode"
+          :disabled="isAdd"
+        >
+          <span v-if="!isEdit"
+            >点击进入编辑模式</span
+          >
           <span v-else>点击退出编辑模式</span>
         </el-button>
-        <el-button type="primary" @click="addMode" :disabled="isEdit">
-          <span v-if="!isAdd">点击进入增加/删除模式</span>
-          <span v-else>点击退出增加/删除模式</span>
+        <el-button
+          type="primary"
+          @click="addMode"
+          :disabled="isEdit"
+        >
+          <span v-if="!isAdd"
+            >点击进入增加/删除模式</span
+          >
+          <span v-else
+            >点击退出增加/删除模式</span
+          >
         </el-button>
       </div>
       <div class="edit" v-if="isEdit">
+        <div
+          class="data-title"
+          v-if="!editData.originalData"
+          >请在左侧点击想要编辑的数据</div
+        >
 
-        <div class="data-title" v-if="!editData.originalData">请在左侧点击想要编辑的数据</div>
-
-        <div class="edit-type" v-if="editData.originalData">
-          <el-card shadow="never">编辑类型：{{ editData.changeTitle }}&emsp;数据归属：
-            {{ GRADE_TRANSLATE[editData.originalAll.Grade] }}
-            {{ CLASS_TRANSLATE[editData.originalAll.Class] }}
+        <div
+          class="edit-type"
+          v-if="editData.originalData"
+        >
+          <el-card shadow="never"
+            >编辑类型：{{
+              editData.changeTitle
+            }}&emsp;数据归属：
+            {{
+              GRADE_TRANSLATE[
+                editData.originalAll.Grade
+              ]
+            }}
+            {{
+              CLASS_TRANSLATE[
+                editData.originalAll.Class
+              ]
+            }}
             {{ editData.originalAll.Name }}
           </el-card>
         </div>
 
-        <div class="edit-data" v-if="editData.originalData">
+        <div
+          class="edit-data"
+          v-if="editData.originalData"
+        >
           <div class="original-data">
             <div class="data-title">原数据</div>
             <div>{{ editData.originalData }}</div>
           </div>
           <div class="now-data">
-            <div class="data-title">修改后数据</div>
+            <div class="data-title"
+              >修改后数据</div
+            >
             <el-form
               class="now-data-form"
               ref="ruleFormRef"
@@ -204,17 +295,27 @@ getInformation()
               >
                 <el-input
                   v-model="editData.nowData"
-                  style="width: 100%;"
+                  style="width: 100%"
                 />
               </el-form-item>
             </el-form>
           </div>
         </div>
 
-        <div class="edit-submit" v-if="editData.originalData">
-          <el-button type="primary" @click="editSubmit" size="large" color="#80e1d9"><span class="white-text">确认修改</span></el-button>
+        <div
+          class="edit-submit"
+          v-if="editData.originalData"
+        >
+          <el-button
+            type="primary"
+            @click="editSubmit"
+            size="large"
+            color="#80e1d9"
+            ><span class="white-text"
+              >确认修改</span
+            ></el-button
+          >
         </div>
-
       </div>
     </div>
   </div>
@@ -285,7 +386,6 @@ getInformation()
         }
       }
     }
-    
   }
 }
 </style>

@@ -34,10 +34,17 @@ const keywordSearch = keyword => {
   )
 }
 
+const changeInformation = (ID, changeData, type) => {
+  return querySql(
+    `update ${table.student} set ${type} = '${changeData}' where StudentId = '${ID}'`,
+  )
+}
+
 module.exports = {
   getStudent,
   getClass,
   getResult,
   getPerStudentMessage,
   keywordSearch,
+  changeInformation,
 }

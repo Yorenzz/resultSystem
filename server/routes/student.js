@@ -5,6 +5,7 @@ const {
   getResult,
   getPerStudentMessage,
   keywordSearch,
+  changeInformation,
 } = require('../server/student')
 const utils = require('../utils/util')
 router.prefix('/student')
@@ -74,7 +75,8 @@ router.get('/studentResult', async (ctx, next) => {
 
 router.post('/changeStudentInformation', async (ctx, next) => {
   const { ID, changeData, type } = ctx.request.body
-  console.log(ID, changeData, type, 'change');
+  const res = await changeInformation(ID, changeData, type)
+  console.log(res)
   ctx.body = utils.success('test', '修改成功')
 })
 

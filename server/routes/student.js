@@ -72,4 +72,10 @@ router.get('/studentResult', async (ctx, next) => {
   ctx.body = utils.success({ result, information })
 })
 
+router.post('/changeStudentInformation', async (ctx, next) => {
+  const { ID, changeData, type } = ctx.request.body
+  console.log(ID, changeData, type, 'change');
+  ctx.body = utils.success('test', '修改成功')
+})
+
 module.exports = router

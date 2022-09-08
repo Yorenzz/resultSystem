@@ -49,3 +49,11 @@ export const register = (username, password) => {
     data: { username, password }
   })
 }
+
+export const changeStudentInformation = (ID, changeData, type) => {
+  return request({
+    method: 'POST',
+    url: '/student/changeStudentInformation',
+    data: { ID, changeData, type }
+  })
+}

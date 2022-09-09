@@ -40,6 +40,10 @@ const changeInformation = (ID, changeData, type) => {
   )
 }
 
+const isHaveStudent = (ID) => {
+	return querySql(`select COUNT(StudentId) as isHave from ${table.student} where StudentId = '${ID}'`)
+}
+
 module.exports = {
   getStudent,
   getClass,
@@ -47,4 +51,5 @@ module.exports = {
   getPerStudentMessage,
   keywordSearch,
   changeInformation,
+  isHaveStudent
 }

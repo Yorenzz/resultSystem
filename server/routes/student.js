@@ -6,7 +6,9 @@ const {
   getPerStudentMessage,
   keywordSearch,
   changeInformation,
+  isHaveStudent,
 } = require('../server/student')
+const { replaceNumberByIndex } = require('../utils/util')
 const utils = require('../utils/util')
 router.prefix('/student')
 
@@ -75,9 +77,45 @@ router.get('/studentResult', async (ctx, next) => {
 
 router.post('/changeStudentInformation', async (ctx, next) => {
   const { ID, changeData, type } = ctx.request.body
-  const res = await changeInformation(ID, changeData, type)
-  console.log(res)
-  ctx.body = utils.success('test', '修改成功')
+  if(type === 'StudentId'){
+    const isHave = await isHaveStudent(ID)
+    if(isHave[0].isHave !== 1){
+      const res = await changeInformation(ID, changeData, type)
+      console.log(res)
+      ctx.body = utils.success('test', '修改成功')
+    } else {
+      ctx.body = utils.fail('已存在相同学生编号，请重试')
+    }
+  } else if(type === 'Grade'){
+    const changeID = replaceNumberByIndex(ID, 1, changeData)
+    console.log(changeID);
+    const isHave = await isHaveStudent(changeID)
+    if(isHave[0].isHave !== 1){
+      const res = await changeInformation(ID, changeData, type)
+      const res2 = await changeInformation(ID, changeID, 'StudentId')     
+      console.log(res)
+      ctx.body = utils.success('test', '修改成功')
+    } else {
+      ctx.body = utils.fail('更改后年级已存在相同学生编号，请重试')
+    }
+  } else if(type === 'Class'){
+    const changeID = replaceNumberByIndex(ID, 2, changeData)
+    console.log(changeID);
+    const isHave = await isHaveStudent(changeID)
+    if(isHave[0].isHave !== 1){
+      const res = await changeInformation(ID, changeData, type)
+      const res2 = await changeInformation(ID, changeID, 'StudentId')     
+      console.log(res)
+      ctx.body = utils.success('test', '修改成功')
+    } else {
+      ctx.body = utils.fail('更改后班级已存在相同学生编号，请重试')
+    }
+  } else {
+    const res = await changeInformation(ID, changeData, type)
+    console.log(res)
+    ctx.body = utils.success('test', '修改成功')    
+  }
+
 })
 
 module.exports = router

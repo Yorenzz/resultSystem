@@ -1,5 +1,6 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { ElMessageBox } from 'element-plus';
+import { computed, reactive, ref } from 'vue'
 import {
   getStudentInformation,
   changeStudentInformation,
@@ -15,6 +16,11 @@ const ruleFormRef = ref(null)
 const loading = reactive({
   table: false,
   button: false,
+})
+const dataVerify = computed(()=>{
+  return tableData.value.map((item)=>{
+    return item.StudentId
+  })
 })
 let editData = reactive({
   originalData: null,
@@ -58,8 +64,9 @@ const column = [
 
 const dataPass = (rule, value, callback) => {
   const reg = /^[\u4E00-\u9FA5]+$/
+  const IDreg = /^[1-3][1-9](0[1-9]|[1-9][0-9])$/
   if (
-    value === null ||
+    !value ||
     value === editData.originalData
   ) {
     callback(new Error('请输入修改数据'))
@@ -73,6 +80,21 @@ const dataPass = (rule, value, callback) => {
     isNaN(value - 0)
   ) {
     callback(new Error('请输入整数数字！'))
+  } else if(
+    editData.changeField === 'StudentId' &&
+    !IDreg.test(value)
+  ){
+    callback('请检查编号格式！')
+  } else if(
+    editData.changeField === 'Grade' &&
+    (value < 1 || value > 3)
+  ){
+    callback('请检查年级格式！')
+  } else if(
+    editData.changeField === 'Class' &&
+    (value < 1 || value > 9)
+  ){
+    callback('请检查班级格式！')
   } else {
     callback()
   }
@@ -111,11 +133,27 @@ const handleEditData = (row, column) => {
   editData.nowData = null
 }
 
+const initData = () => {
+  editData.changeField = null
+  editData.changeTitle = null
+  editData.nowData = null
+  editData.originalData = null
+  editData.originalAll = {}
+}
+
 const editSubmit = () => {
-  console.log(1)
   ruleFormRef.value.validate().then(() => {
-    console.log(2)
-    changeStudent()
+    if(editData.changeField === 'StudentId' && (editData.originalData+'').slice(0,2) !== (editData.nowData+'').slice(0,2)){
+      ElMessageBox.alert(
+        '修改类型为编号时不支持修改年级或班级',
+        '注意：',
+        {
+          confirmButtonText: '返回',
+        }
+      )
+    } else {
+      changeStudent()
+    }
   })
 }
 
@@ -135,6 +173,7 @@ const changeStudent = () => {
     })
     .finally(() => {
       loading.button = false
+      initData()
     })
 }
 
@@ -248,26 +287,51 @@ getInformation()
           v-if="!editData.originalData"
           >请在左侧点击想要编辑的数据</div
         >
-
         <div
           class="edit-type"
           v-if="editData.originalData"
         >
-          <el-card shadow="never"
-            >编辑类型：{{
-              editData.changeTitle
-            }}&emsp;数据归属：
-            {{
-              GRADE_TRANSLATE[
-                editData.originalAll.Grade
-              ]
-            }}
-            {{
-              CLASS_TRANSLATE[
-                editData.originalAll.Class
-              ]
-            }}
-            {{ editData.originalAll.Name }}
+          <el-card
+            shadow="never"
+            style="display: flex;"
+          >
+            <div class="card-type">
+              编辑类型：{{
+                editData.changeTitle
+              }}
+              <div 
+                class="icon-edit-id"
+                v-if="editData.changeField === 'StudentId'"
+              >
+                <el-popover
+                  placement="bottom"
+                  :width="200"
+                  trigger="hover"
+                  content="编号首位代表年级，第二次代表班级，最后两位代表座号，编辑编号时不支持更改前两位"
+                >
+                  <template #reference>
+                    <el-icon
+                      color="#666c77"
+                    >
+                      <QuestionFilled />
+                    </el-icon>
+                  </template>
+                </el-popover>              
+              </div>
+
+              &emsp;数据归属：
+              {{
+                GRADE_TRANSLATE[
+                  editData.originalAll.Grade
+                ]
+              }}
+              {{
+                CLASS_TRANSLATE[
+                  editData.originalAll.Class
+                ]
+              }}
+              {{ editData.originalAll.Name }}            
+            </div>
           </el-card>
         </div>
 
@@ -351,6 +415,17 @@ getInformation()
       }
       .edit-type {
         padding-bottom: 32px;
+        .card-type {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .icon-edit-id {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 4px;
+          }
+        }
       }
       .edit-data {
         margin-top: 32px;

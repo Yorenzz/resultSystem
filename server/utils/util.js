@@ -2,6 +2,7 @@
  * 通用工具函数
  */
 const log4js = require('./log4j')
+
 const CODE  = {
     SUCCESS: 200,
     PARAM_ERROR: 10001, // 参数错误
@@ -10,6 +11,13 @@ const CODE  = {
     BUSINESS_ERROR: 500001, //业务请求失败
     AUTH_ERROR: 40001, // 认证失败或TOKEN过期
 }
+
+const replaceNumberByIndex = (str, index, char) => {
+    const strArr = (str+'').split('')
+    strArr[index] = char
+    return parseInt(strArr.join(''))
+}
+
 module.exports = {
     /**
      * 分页结构封装
@@ -40,5 +48,6 @@ module.exports = {
             code,data,msg
         }
     },
-    CODE
+    CODE,
+    replaceNumberByIndex
 }

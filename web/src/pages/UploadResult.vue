@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import * as XLSX from 'xlsx'
+import { UploadFilled } from '@element-plus/icons-vue'
 
 const column = computed(() => {
   return excelData.value[0]?.header.map(item => {
@@ -13,11 +14,16 @@ const column = computed(() => {
 })
 const data = ref(null)
 const excelData = ref([])
-
+const uploadRef = ref(null)
+const file = ref([])
+const submitUpload = () => {
+  uploadRef?.value.submit()
+}
 let fileContent = ''
-const fileSubmit = e => {
-  const files = e && e.target.files
-  const rawFile = files && files[0] // only setting files[0]
+const fileSubmit = (e, file) => {
+  console.log(e, file.value);
+  const files = e && e.raw
+  const rawFile = files // only setting files[0]
   if (!rawFile) return
 
   const reader = new FileReader()
@@ -77,9 +83,29 @@ function getHeaderRow(sheet) {
 </script>
 
 <template>
-  upload
   <div>
-    <input type="file" @change="fileSubmit" />
+    <el-upload
+        v-model:file-list="file"
+        ref="uploadRef"
+        drag
+        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+        :auto-upload="false"
+        :on-change="fileSubmit"
+        accept=".xlsx,.xls"
+    >
+        <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+        <div class="el-upload__text">
+            拖拽文件到此处或<em>点击上传</em>
+        </div>
+        <template #tip>
+        <div class="el-upload__tip">
+            请上传xlsx或xls文件
+        </div>
+        </template>
+    </el-upload>
+    <el-button class="ml-3" type="success" @click="submitUpload">
+      确认上传
+    </el-button>
   </div>
   <vxe-grid
     :columns="column"

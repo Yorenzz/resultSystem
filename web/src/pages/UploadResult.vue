@@ -1,7 +1,12 @@
 <script setup>
 import { computed, ref } from 'vue'
 import * as XLSX from 'xlsx'
+import config, {
+  TOKEN_KEY,
+} from '../config/index.js'
 import { UploadFilled } from '@element-plus/icons-vue'
+import { uploadFile } from '../api/index.js'
+import storage from '../utils/storage.js'
 
 const column = computed(() => {
   return excelData.value[0]?.header.map(item => {
@@ -12,18 +17,28 @@ const column = computed(() => {
     }
   })
 })
+const header = computed(() => {
+  return {
+    Authorization: `Bearer ${storage.getItem(
+      TOKEN_KEY,
+    )}`,
+  }
+})
 const data = ref(null)
 const excelData = ref([])
 const uploadRef = ref(null)
 const file = ref([])
+const uploadFileContent = ref(null)
+
 const submitUpload = () => {
   uploadRef?.value.submit()
 }
+
 let fileContent = ''
-const fileSubmit = (e, file) => {
-  console.log(e, file.value);
-  const files = e && e.raw
-  const rawFile = files // only setting files[0]
+const fileSubmit = (e, files) => {
+  console.log(e, file.value)
+  uploadFileContent.value = files
+  const rawFile = e && e.raw // only setting files[0]
   if (!rawFile) return
 
   const reader = new FileReader()
@@ -80,30 +95,46 @@ function getHeaderRow(sheet) {
   }
   return headers
 }
+
+const uploadHttpRequest = params => {
+  const form = new FormData()
+  form.append('file', params.file)
+  console.log(form, params.file)
+  uploadFile(params.file).then(res => {
+    console.log(res)
+  })
+}
 </script>
 
 <template>
   <div>
     <el-upload
-        v-model:file-list="file"
-        ref="uploadRef"
-        drag
-        action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-        :auto-upload="false"
-        :on-change="fileSubmit"
-        accept=".xlsx,.xls"
+      v-model:file-list="file"
+      ref="uploadRef"
+      drag
+      :headers="header"
+      :action="`${config.baseApi}/student/uploadFile`"
+      :auto-upload="false"
+      :on-change="fileSubmit"
+      accept=".xlsx,.xls"
     >
-        <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-        <div class="el-upload__text">
-            拖拽文件到此处或<em>点击上传</em>
-        </div>
-        <template #tip>
+      <el-icon class="el-icon--upload"
+        ><upload-filled
+      /></el-icon>
+      <div class="el-upload__text">
+        拖拽文件到此处或<em>点击上传</em>
+      </div>
+      <template #tip>
         <div class="el-upload__tip">
-            请上传xlsx或xls文件
+          请上传xlsx或xls文件
         </div>
-        </template>
+      </template>
     </el-upload>
-    <el-button class="ml-3" type="success" @click="submitUpload">
+    <el-button
+      class="ml-3"
+      type="success"
+      @click="submitUpload"
+    >
       确认上传
     </el-button>
   </div>

@@ -10,6 +10,8 @@ const {
 } = require('../server/student')
 const { replaceNumberByIndex } = require('../utils/util')
 const utils = require('../utils/util')
+const fs = require('fs')
+const path = require('path')
 router.prefix('/student')
 
 router.get('/getStudentInformation', async (ctx, next) => {
@@ -77,34 +79,34 @@ router.get('/studentResult', async (ctx, next) => {
 
 router.post('/changeStudentInformation', async (ctx, next) => {
   const { ID, changeData, type } = ctx.request.body
-  if(type === 'StudentId'){
+  if (type === 'StudentId') {
     const isHave = await isHaveStudent(ID)
-    if(isHave[0].isHave !== 1){
+    if (isHave[0].isHave !== 1) {
       const res = await changeInformation(ID, changeData, type)
       console.log(res)
       ctx.body = utils.success('test', '修改成功')
     } else {
       ctx.body = utils.fail('已存在相同学生编号，请重试')
     }
-  } else if(type === 'Grade'){
+  } else if (type === 'Grade') {
     const changeID = replaceNumberByIndex(ID, 1, changeData)
-    console.log(changeID);
+    console.log(changeID)
     const isHave = await isHaveStudent(changeID)
-    if(isHave[0].isHave !== 1){
+    if (isHave[0].isHave !== 1) {
       const res = await changeInformation(ID, changeData, type)
-      const res2 = await changeInformation(ID, changeID, 'StudentId')     
+      const res2 = await changeInformation(ID, changeID, 'StudentId')
       console.log(res)
       ctx.body = utils.success('test', '修改成功')
     } else {
       ctx.body = utils.fail('更改后年级已存在相同学生编号，请重试')
     }
-  } else if(type === 'Class'){
+  } else if (type === 'Class') {
     const changeID = replaceNumberByIndex(ID, 2, changeData)
-    console.log(changeID);
+    console.log(changeID)
     const isHave = await isHaveStudent(changeID)
-    if(isHave[0].isHave !== 1){
+    if (isHave[0].isHave !== 1) {
       const res = await changeInformation(ID, changeData, type)
-      const res2 = await changeInformation(ID, changeID, 'StudentId')     
+      const res2 = await changeInformation(ID, changeID, 'StudentId')
       console.log(res)
       ctx.body = utils.success('test', '修改成功')
     } else {
@@ -113,9 +115,20 @@ router.post('/changeStudentInformation', async (ctx, next) => {
   } else {
     const res = await changeInformation(ID, changeData, type)
     console.log(res)
-    ctx.body = utils.success('test', '修改成功')    
+    ctx.body = utils.success('test', '修改成功')
   }
+})
 
+router.post('/uploadFile', async (ctx, next) => {
+  const file = ctx.request.files.file // 获取上传文件
+  console.log(file)
+  const reader = fs.createReadStream(file.filepath) // 创建可读流
+  const ext = file.originalFilename.split('.').pop() // 获取上传文件扩展名
+  const upStream = fs.createWriteStream(
+    `upload/${Math.random().toString()}.${ext}`,
+  ) // 创建可写流
+  reader.pipe(upStream) // 可读流通过管道写入可写流
+  ctx.body = utils.success('test', '修改成功')
 })
 
 module.exports = router

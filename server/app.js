@@ -12,47 +12,54 @@ const users = require('./routes/users')
 const student = require('./routes/student')
 const util = require('./utils/util')
 const log4js = require('./utils/log4j')
-
+const koaBody = require('koa-body')
 // error handler
 onerror(app)
 
 app.use(cors())
 // middlewares
 app.use(
-    bodyparser({
-        enableTypes: ['json', 'form', 'text'],
-    }),
+  bodyparser({
+    enableTypes: ['json', 'form', 'text'],
+  }),
 )
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
-
 app.use(
-    views(__dirname + '/views', {
-        extension: 'pug',
-    }),
+  koaBody({
+    multipart: true,
+    formidable: {
+      maxFileSize: 200 * 1024 * 1024, // 设置上传文件大小最大限制，默认2M
+    },
+  }),
+)
+app.use(
+  views(__dirname + '/views', {
+    extension: 'pug',
+  }),
 )
 
 // logger
 app.use(async (ctx, next) => {
-    log4js.info(`get params:${JSON.stringify(ctx.request.query)}`)
-    log4js.info(`post params:${JSON.stringify(ctx.request.body)}`)
-    await next().catch(err => {
-        console.log(1, err.status)
-        if (err.status === 401) {
-            ctx.status = 200
-            console.log(1)
-            ctx.body = util.fail('Token认证失败', util.CODE.AUTH_ERROR)
-        } else {
-            throw err
-        }
-    })
+  log4js.info(`get params:${JSON.stringify(ctx.request.query)}`)
+  log4js.info(`post params:${JSON.stringify(ctx.request.body)}`)
+  await next().catch(err => {
+    console.log(1, err.status)
+    if (err.status === 401) {
+      ctx.status = 200
+      console.log(1)
+      ctx.body = util.fail('Token认证失败', util.CODE.AUTH_ERROR)
+    } else {
+      throw err
+    }
+  })
 })
 
 app.use(
-    jwt({ secret: 'Yorenz' }).unless({
-        path: [/^\/users\/login/, /^\/users\/register/],
-    }),
+  jwt({ secret: 'Yorenz' }).unless({
+    path: [/^\/users\/login/, /^\/users\/register/],
+  }),
 )
 
 // routes
@@ -62,7 +69,7 @@ app.use(student.routes(), student.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
-    console.error('server error', err, ctx)
+  console.error('server error', err, ctx)
 })
 
 module.exports = app

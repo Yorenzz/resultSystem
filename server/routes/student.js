@@ -121,12 +121,12 @@ router.post('/changeStudentInformation', async (ctx, next) => {
 
 router.post('/uploadFile', async (ctx, next) => {
   const file = ctx.request.files.file // 获取上传文件
-  console.log(file)// file包含了文件名，文件类型，大小，路径等信息
-  const fileName = file.originalFilename;
-  const fileObj = fs.readFileSync(file.filepath);
-  console.log(__dirname);
-  fs.writeFileSync(path.join(__dirname, fileName), fileObj);
-  ctx.body = utils.success('test', '修改成功')
+  console.log(file) // file包含了文件名，文件类型，大小，路径等信息
+  const fileName = file.originalFilename
+  const fileObj = fs.readFileSync(file.filepath)
+  const excelPath = path.resolve('./public/upload')
+  fs.writeFileSync(path.join(excelPath, fileName), fileObj)
+  ctx.body = utils.success(null, '修改成功')
 })
 
 module.exports = router

@@ -7,6 +7,7 @@ import config, {
 import { UploadFilled } from '@element-plus/icons-vue'
 import { uploadFile } from '../api/index.js'
 import storage from '../utils/storage.js'
+import { genFileId } from 'element-plus'
 
 const column = computed(() => {
   return excelData.value[0]?.header.map(item => {
@@ -96,6 +97,13 @@ function getHeaderRow(sheet) {
   return headers
 }
 
+const handleExceed = files => {
+  uploadRef.value.clearFiles()
+  const file = files[0]
+  file.uid = genFileId()
+  uploadRef.value.handleStart(file)
+}
+
 const uploadHttpRequest = params => {
   const form = new FormData()
   form.append('file', params.file)
@@ -116,6 +124,8 @@ const uploadHttpRequest = params => {
       :action="`${config.baseApi}/student/uploadFile`"
       :auto-upload="false"
       :on-change="fileSubmit"
+      :limit="1"
+      :on-exceed="handleExceed"
       accept=".xlsx,.xls"
     >
       <el-icon class="el-icon--upload"

@@ -121,13 +121,11 @@ router.post('/changeStudentInformation', async (ctx, next) => {
 
 router.post('/uploadFile', async (ctx, next) => {
   const file = ctx.request.files.file // 获取上传文件
-  console.log(file)
-  const reader = fs.createReadStream(file.filepath) // 创建可读流
-  const ext = file.originalFilename.split('.').pop() // 获取上传文件扩展名
-  const upStream = fs.createWriteStream(
-    `upload/${Math.random().toString()}.${ext}`,
-  ) // 创建可写流
-  reader.pipe(upStream) // 可读流通过管道写入可写流
+  console.log(file)// file包含了文件名，文件类型，大小，路径等信息
+  const fileName = file.originalFilename;
+  const fileObj = fs.readFileSync(file.filepath);
+  console.log(__dirname);
+  fs.writeFileSync(path.join(__dirname, fileName), fileObj);
   ctx.body = utils.success('test', '修改成功')
 })
 

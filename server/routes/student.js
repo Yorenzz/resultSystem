@@ -126,7 +126,7 @@ router.post('/uploadFile', async (ctx, next) => {
   const fileObj = fs.readFileSync(file.filepath)
   const excelPath = path.resolve('./public/upload')
   fs.writeFileSync(path.join(excelPath, fileName), fileObj)
-  ctx.body = utils.success(null, '修改成功')
+  ctx.body = utils.success(null, '上传成功')
 })
 
 module.exports = router

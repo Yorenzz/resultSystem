@@ -75,13 +75,52 @@ const routes = [
         },
       },
       {
-        name: 'uploadResult',
-        path: '/upload-result',
+        name: 'resultInformation',
+        path: '/result-information',
         component: () =>
-          import('../pages/UploadResult.vue'),
+          import(
+            '../pages/student-information/index.vue'
+          ),
         meta: {
-          title: '上传成绩',
+          title: '成绩信息',
         },
+        redirect:
+          '/result-information/upload-information',
+        children: [
+          {
+            name: 'EditResult',
+            path: 'edit-result',
+            component: () =>
+              import(
+                '../pages/result-information/EditResult.vue'
+              ),
+            meta: {
+              title: '查看&编辑',
+            },
+          },
+          {
+            name: 'TimeResult',
+            path: 'time-result',
+            component: () =>
+              import(
+                '../pages/result-information/TimeResult.vue'
+              ),
+            meta: {
+              title: '占位',
+            },
+          },
+          {
+            name: 'UploadStudent',
+            path: 'upload-result',
+            component: () =>
+              import(
+                '../pages/result-information/UploadResult.vue'
+              ),
+            meta: {
+              title: '上传成绩',
+            },
+          },
+        ],
       },
       {
         name: 'studentInformation',
@@ -116,6 +155,17 @@ const routes = [
               ),
             meta: {
               title: '批量编辑',
+            },
+          },
+          {
+            name: 'uploadStudent',
+            path: 'upload-information',
+            component: () =>
+              import(
+                '../pages/student-information/UploadStudent.vue'
+              ),
+            meta: {
+              title: '上传学生信息',
             },
           },
         ],

@@ -45,11 +45,9 @@ app.use(async (ctx, next) => {
   log4js.info(`get params:${JSON.stringify(ctx.request.query)}`)
   log4js.info(`post params:${JSON.stringify(ctx.request.body)}`)
   await next().catch(err => {
-    console.log(1, err.status)
     if (err.status === 401) {
       ctx.status = 200
-      console.log(1)
-      ctx.body = util.fail('Token认证失败', util.CODE.AUTH_ERROR)
+      ctx.body = util.fail('登录失效', util.CODE.AUTH_ERROR)
     } else {
       throw err
     }
@@ -58,7 +56,11 @@ app.use(async (ctx, next) => {
 
 app.use(
   jwt({ secret: 'Yorenz' }).unless({
-    path: [/^\/users\/login/, /^\/users\/register/],
+    path: [
+      /^\/users\/login/,
+      /^\/users\/register/,
+      /^\/student\/downloadStudentTemplate/,
+    ],
   }),
 )
 

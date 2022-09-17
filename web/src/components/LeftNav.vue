@@ -39,10 +39,29 @@ const collapse = ref(false)
       <el-icon><setting /></el-icon>
       <template #title>分数段条形图</template>
     </el-menu-item>
-    <el-menu-item index="/upload-result">
-      <el-icon><setting /></el-icon>
-      <template #title>上传成绩信息</template>
-    </el-menu-item>
+    <el-sub-menu index="/upload-result">
+      <template #title>
+        <el-icon>
+          <setting />
+        </el-icon>
+        管理成绩信息
+      </template>
+      <el-menu-item
+        index="/result-information/edit-result"
+      >
+        查看&编辑
+      </el-menu-item>
+      <el-menu-item
+        index="/result-information/time-result"
+      >
+        占位
+      </el-menu-item>
+      <el-menu-item
+        index="/result-information/upload-result"
+      >
+        上传成绩
+      </el-menu-item>
+    </el-sub-menu>
     <el-sub-menu index="/student-information">
       <template #title>
         <el-icon><location /></el-icon>
@@ -50,12 +69,19 @@ const collapse = ref(false)
       </template>
       <el-menu-item
         index="/student-information/view-information"
-        >查看&编辑</el-menu-item
       >
+        查看&编辑
+      </el-menu-item>
       <el-menu-item
         index="/student-information/edit-information"
-        >批量编辑</el-menu-item
       >
+        批量编辑
+      </el-menu-item>
+      <el-menu-item
+        index="/student-information/upload-information"
+      >
+        上传学生信息
+      </el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>

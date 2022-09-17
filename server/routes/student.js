@@ -12,6 +12,9 @@ const { replaceNumberByIndex } = require('../utils/util')
 const utils = require('../utils/util')
 const fs = require('fs')
 const path = require('path')
+const send = require('koa-send')
+const { host } = require('../config')
+
 router.prefix('/student')
 
 router.get('/getStudentInformation', async (ctx, next) => {
@@ -127,6 +130,18 @@ router.post('/uploadFile', async (ctx, next) => {
   const excelPath = path.resolve('./public/upload')
   fs.writeFileSync(path.join(excelPath, fileName), fileObj)
   ctx.body = utils.success(null, '上传成功')
+})
+
+router.get('/templateLink', async (ctx, next) => {
+  ctx.body = utils.success(
+    `http://localhost:3000/student/downloadStudentTemplate`,
+  )
+})
+
+router.get('/downloadStudentTemplate', async (ctx, next) => {
+  const templatePath = './public/template/学生信息模板.xlsx'
+  ctx.attachment(templatePath)
+  await send(ctx, templatePath)
 })
 
 module.exports = router

@@ -72,3 +72,10 @@ export const uploadFile = file => {
     },
   })
 }
+
+export const downloadStudentTemplate = () => {
+  return request({
+    method: 'GET',
+    url: '/student/templateLink',
+  })
+}

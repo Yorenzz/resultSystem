@@ -20,7 +20,7 @@ const getClass = grade => {
 
 const getResult = id => {
   return querySql(
-    `select Chinese, Math, English, Politics, History, Physical, Chemistry, Biology, Geography, Sport, Composite, Total from ${table.result} where StudentId = '${id}'`,
+    `select Chinese, Math, English, Politics, History, Physical, Chemistry, Biology, Geography, Sport, Composite, Total from ${table.result} where StudentId = '${id}' and TestTime = '1'`,
   )
 }
 
@@ -40,8 +40,10 @@ const changeInformation = (ID, changeData, type) => {
   )
 }
 
-const isHaveStudent = (ID) => {
-	return querySql(`select COUNT(StudentId) as isHave from ${table.student} where StudentId = '${ID}'`)
+const isHaveStudent = ID => {
+  return querySql(
+    `select COUNT(StudentId) as isHave from ${table.student} where StudentId = '${ID}'`,
+  )
 }
 
 module.exports = {
@@ -51,5 +53,5 @@ module.exports = {
   getPerStudentMessage,
   keywordSearch,
   changeInformation,
-  isHaveStudent
+  isHaveStudent,
 }

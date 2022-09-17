@@ -3,12 +3,21 @@ import { computed, ref, watch } from 'vue'
 import * as XLSX from 'xlsx'
 import config, {
   TOKEN_KEY,
-} from '../config/index.js'
+} from '../../config/index.js'
 import { UploadFilled } from '@element-plus/icons-vue'
-import { uploadFile } from '../api/index.js'
-import storage from '../utils/storage.js'
-import { ElMessage, genFileId } from 'element-plus'
-import { STUDENT_KEY_TRANSLATE, LETTER_TO_NUMBER } from '../constant'
+import {
+  downloadStudentTemplate,
+  uploadFile,
+} from '../../api/index.js'
+import storage from '../../utils/storage.js'
+import {
+  ElMessage,
+  genFileId,
+} from 'element-plus'
+import {
+  STUDENT_KEY_TRANSLATE,
+  LETTER_TO_NUMBER,
+} from '../../constant/index.js'
 
 const column = computed(() => {
   return excelData.value[0]?.header.map(item => {
@@ -25,8 +34,8 @@ const uploadRef = ref(null)
 const file = ref([])
 const flag = ref([])
 
-const tableData = computed(()=>{
-  return excelData.value[0]?.results.map((item)=>{
+const tableData = computed(() => {
+  return excelData.value[0]?.results.map(item => {
     return {
       StudentId: item['座号'],
       Name: item['姓名'],
@@ -36,11 +45,10 @@ const tableData = computed(()=>{
   })
 })
 
-const submitDisabled = computed(()=>{
-  if(!flag.value.length && file.value.length){
+const submitDisabled = computed(() => {
+  if (!flag.value.length && file.value.length) {
     return false
-  }
-  else {
+  } else {
     return true
   }
 })
@@ -56,9 +64,9 @@ const submitUpload = () => {
   // uploadRef?.value.submit()
 }
 
-const initFileData = ()=>{
-  flag.value=[]
-  excelData.value=[]
+const initFileData = () => {
+  flag.value = []
+  excelData.value = []
   submitDisable.value = true
 }
 
@@ -77,9 +85,12 @@ const fileSubmit = (e, files) => {
     for (const sheetName of workbook.SheetNames) {
       const worksheet = workbook.Sheets[sheetName]
       const header = getHeaderRow(worksheet)
-      if(typeof header === 'number'){
-        flag.value.push({c: LETTER_TO_NUMBER[header], r: 2})
-        return 
+      if (typeof header === 'number') {
+        flag.value.push({
+          c: LETTER_TO_NUMBER[header],
+          r: 2,
+        })
+        return
       }
       let results = XLSX.utils.sheet_to_json(
         worksheet,
@@ -126,14 +137,17 @@ function getHeaderRow(sheet) {
     headers.push(hdr)
   }
 
-  for(let W = range.s.c; W <= range.e.c; ++W){
-    for(let H = range.s.r; H <= range.e.r; ++H){
+  for (let W = range.s.c; W <= range.e.c; ++W) {
+    for (let H = range.s.r; H <= range.e.r; ++H) {
       const cell =
-      sheet[
-        XLSX.utils.encode_cell({ c: W, r: H })
-      ]
-      if(!cell){
-        flag.value.push({c: LETTER_TO_NUMBER[W+1], r: H+1})
+        sheet[
+          XLSX.utils.encode_cell({ c: W, r: H })
+        ]
+      if (!cell) {
+        flag.value.push({
+          c: LETTER_TO_NUMBER[W + 1],
+          r: H + 1,
+        })
       }
     }
   }
@@ -142,17 +156,37 @@ function getHeaderRow(sheet) {
 
 const handleExceed = files => {
   uploadRef.value.clearFiles()
+  initFileData()
   const fileExceed = files[0]
   fileExceed.uid = genFileId()
   uploadRef.value.handleStart(fileExceed)
 }
 
-
+const downloadTemplate = () => {
+  downloadStudentTemplate()
+    .then(res => {
+      window.open(res)
+    })
+    .catch(err => {
+      console.warn(err)
+    })
+}
 </script>
 
 <template>
   <div class="upload-content">
     <div class="upload-error-tip">
+      <span>
+        <el-button
+          link
+          type="primary"
+          @click="downloadTemplate"
+          class="template-button"
+        >
+          下载文件模板
+        </el-button>
+      </span>
+
       <el-upload
         v-model:file-list="file"
         ref="uploadRef"
@@ -168,7 +202,7 @@ const handleExceed = files => {
         class="upload"
       >
         <el-icon class="el-icon--upload">
-          <upload-filled/>
+          <upload-filled />
         </el-icon>
         <div class="el-upload__text">
           拖拽文件到此处或<em>点击上传</em>
@@ -180,17 +214,22 @@ const handleExceed = files => {
         </template>
       </el-upload>
       <div class="tips">
-        <el-card
-          class="tip-card"
-        >
+        <el-card class="tip-card">
           <span v-if="!file.length">
             加载文件后此处显示是否有格式错误
           </span>
-          <div v-else v-for="item in flag" class="tip-content">
-            excel中{{item.c}}列{{item.r}}行为空
-            
+          <div
+            v-else
+            v-for="item in flag"
+            class="tip-content"
+          >
+            excel中{{ item.c }}列{{
+              item.r
+            }}行为空
           </div>
-          <span v-if="!flag.length&&file.length">
+          <span
+            v-if="!flag.length && file.length"
+          >
             格式正确，点击下方按钮确认上传数据
           </span>
         </el-card>
@@ -204,9 +243,7 @@ const handleExceed = files => {
         </el-button>
       </div>
     </div>
-    <div
-      class="table-content"
-    >
+    <div class="table-content">
       <vxe-grid
         :columns="column"
         :data="tableData"
@@ -214,44 +251,48 @@ const handleExceed = files => {
         show-overflow
       />
     </div>
-    
   </div>
-  
 </template>
 
 <style scoped lang="scss">
-  .upload-content {
+.upload-content {
+  display: flex;
+  padding: 32px;
+  .upload-error-tip {
     display: flex;
-    padding: 32px;
-    .upload-error-tip {
+    flex-direction: column;
+    flex: 1;
+    height: calc(100vh - 154px);
+    .template-button {
+      width: auto;
+      font-size: 18px;
+      margin-right: 16px;
+      margin-bottom: 16px;
+    }
+    .upload {
+      margin-right: 16px;
+      margin-bottom: 64px;
+    }
+    .tips {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      flex: 1;
-      height: calc(100vh - 154px);
-      .upload {
-        margin-right: 16px;
-        margin-bottom: 64px;
-      }
-      .tips {
-        flex: 1;
+      align-items: center;
+      .tip-card {
+        margin-bottom: 32px;
+        min-width: 400px;
+        min-height: 110px;
         display: flex;
-        flex-direction: column;
+        justify-content: center;
         align-items: center;
-        .tip-card {
-          margin-bottom: 32px;
-          min-width: 400px;
-          min-height: 110px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          .tip-content {
-            margin-bottom: 4px;
-          }
+        .tip-content {
+          margin-bottom: 4px;
         }
       }
     }
-    .table-content {
-      flex: 1;
-    }
   }
+  .table-content {
+    flex: 1;
+  }
+}
 </style>

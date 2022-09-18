@@ -55,6 +55,15 @@ export const CLASS_TRANSLATE = {
   6: '六班',
 }
 
+export const CLASS_TRANSLATE_REVERSE = {
+  一班: 1,
+  二班: 2,
+  三班: 3,
+  四班: 4,
+  五班: 5,
+  六班: 6,
+}
+
 export const GRADE_TRANSLATE = {
   1: '初一',
   2: '初二',
@@ -62,13 +71,38 @@ export const GRADE_TRANSLATE = {
 }
 
 export const STUDENT_KEY_TRANSLATE = {
-  '座号': 'StudentId',
-  '姓名': 'Name',
-  '班级': 'Class',
-  '年级': 'Grade',
+  座号: 'StudentId',
+  姓名: 'Name',
+  班级: 'Class',
+  年级: 'Grade',
 }
 
 export const LETTER_TO_NUMBER = [
-  '', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-  'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+  '',
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
 ]

@@ -79,3 +79,11 @@ export const downloadStudentTemplate = () => {
     url: '/student/templateLink',
   })
 }
+
+export const getClass = grade => {
+  return request({
+    method: 'GET',
+    url: '/student/getClass',
+    data: { grade },
+  })
+}

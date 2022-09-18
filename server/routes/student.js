@@ -144,4 +144,10 @@ router.get('/downloadStudentTemplate', async (ctx, next) => {
   await send(ctx, templatePath)
 })
 
+router.get('/getClass', async (ctx, next) => {
+  const { grade } = ctx.request.query
+  const res = await getClass(grade)
+  ctx.body = utils.success(res)
+})
+
 module.exports = router

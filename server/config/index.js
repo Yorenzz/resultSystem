@@ -8,9 +8,9 @@ module.exports = {
     result: 'result',
     student: 'student',
     resultDetail: 'result_detail',
-    testTime: 'test_time'
+    testTime: 'test_time',
   },
-  GRADE_SUBJECT : [
+  GRADE_SUBJECT: [
     [],
     [
       'Chinese',
@@ -46,5 +46,19 @@ module.exports = {
       'Sport',
       'Total',
     ],
-  ]
+  ],
+  SUBJECT_TRANSLATE: {
+    Chinese: '语文',
+    Math: '数学',
+    English: '英语',
+    Politics: '道法',
+    History: '历史',
+    Physical: '物理',
+    Chemistry: '化学',
+    Biology: '生物',
+    Geography: '地理',
+    Total: '总分',
+    Composite: '综合',
+    Sport: '体育',
+  },
 }

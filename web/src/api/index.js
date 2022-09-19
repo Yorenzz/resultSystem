@@ -34,7 +34,6 @@ export const searchStudent = keyword => {
   })
 }
 
-
 export const register = (username, password) => {
   return request({
     method: 'POST',
@@ -89,10 +88,14 @@ export const studentResult = id => {
   })
 }
 
-export const advantageResult = (grade, Class, testTime) => {
+export const advantageResult = (
+  grade,
+  Class,
+  testTime = 1,
+) => {
   return request({
-    method: 'GET',
+    method: 'POST',
     url: '/result/getAdvantage',
-    data: { grade, Class, testTime }
+    data: { grade, Class, testTime },
   })
 }

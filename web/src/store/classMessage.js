@@ -1,18 +1,13 @@
 import { defineStore } from 'pinia'
-import { getClass } from '../api/index.js'
-
-const one = await getClass(1)
-const two = await getClass(2)
-const three = await getClass(3)
 
 export const useClassStore = defineStore(
   'class',
   {
     state: () => {
       return {
-        gradeOneClass: one,
-        gradeTwoClass: two,
-        gradeThreeClass: three,
+        gradeOneClass: [],
+        gradeTwoClass: [],
+        gradeThreeClass: [],
       }
     },
     getters: {
@@ -26,6 +21,17 @@ export const useClassStore = defineStore(
             return state.gradeThreeClass
           }
         }
+      },
+    },
+    actions: {
+      setOne(one) {
+        this.gradeOneClass = one
+      },
+      setTwo(two) {
+        this.gradeTwoClass = two
+      },
+      setThree(three) {
+        this.gradeThreeClass = three
       },
     },
   },

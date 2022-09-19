@@ -1,5 +1,6 @@
-export const GRADE_SUBJECT = {
-  ONE: [
+export const GRADE_SUBJECT = [
+  [],
+  [
     'Chinese',
     'Math',
     'English',
@@ -7,8 +8,10 @@ export const GRADE_SUBJECT = {
     'History',
     'Biology',
     'Geography',
+    'Sport',
+    'Total',
   ],
-  TWO: [
+  [
     'Chinese',
     'Math',
     'English',
@@ -17,8 +20,10 @@ export const GRADE_SUBJECT = {
     'Physical',
     'Biology',
     'Geography',
+    'Sport',
+    'Total',
   ],
-  THREE: [
+  [
     'Chinese',
     'Math',
     'English',
@@ -28,8 +33,10 @@ export const GRADE_SUBJECT = {
     'Chemistry',
     'Biology',
     'Geography',
+    'Sport',
+    'Total',
   ],
-}
+]
 
 export const SUBJECT_TRANSLATE = {
   Chinese: '语文',

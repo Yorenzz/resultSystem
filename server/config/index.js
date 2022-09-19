@@ -6,6 +6,45 @@ module.exports = {
   table: {
     users: 'admin_user',
     result: 'result',
-    student: 'student'
-  }
+    student: 'student',
+    resultDetail: 'result_detail',
+    testTime: 'test_time'
+  },
+  GRADE_SUBJECT : [
+    [],
+    [
+      'Chinese',
+      'Math',
+      'English',
+      'Politics',
+      'History',
+      'Biology',
+      'Geography',
+      'Sport',
+      'Total',
+    ],
+    [
+      'Chinese',
+      'Math',
+      'English',
+      'Politics',
+      'History',
+      'Physical',
+      'Biology',
+      'Geography',
+      'Sport',
+      'Total',
+    ],
+    [
+      'Chinese',
+      'Math',
+      'English',
+      'Politics',
+      'History',
+      'Physical',
+      'Chemistry',
+      'Sport',
+      'Total',
+    ],
+  ]
 }

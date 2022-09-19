@@ -21,11 +21,7 @@ const props = defineProps({
 })
 
 const gradeSubject = computed(() => {
-  return props.msg.Grade === 1
-    ? GRADE_SUBJECT.ONE
-    : props.msg.Grade === 2
-    ? GRADE_SUBJECT.TWO
-    : GRADE_SUBJECT.THREE
+  return GRADE_SUBJECT[props.msg.Grade]
 })
 </script>
 

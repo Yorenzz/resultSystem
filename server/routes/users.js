@@ -8,11 +8,11 @@ const router = require('koa-router')()
 router.prefix('/users')
 
 router.post('/login', async function (ctx, next) {
-  console.log(ctx.request.body)
+  // console.log(ctx.request.body)
   const { username, password } = ctx.request.body
   const res = await Login(username, md5(password))
   const data = { username: res[0].username, role: res[0].role }
-  console.log(res)
+  // console.log(res)
   if (res && res.length) {
     data.token = jwt.sign(
       {
@@ -38,7 +38,7 @@ router.get('/verify', async (ctx, next) => {
       console.log('e', err)
     }
     else {
-      console.log(data, 'data');
+      // console.log(data, 'data');
       res.username = data.res[0].username
       res.role = data.res[0].role
     }
@@ -47,14 +47,14 @@ router.get('/verify', async (ctx, next) => {
 })
 
 router.post('/register', async function (ctx, next) {
-  console.log(ctx.request.body)
+  // console.log(ctx.request.body)
   const { username, password } = ctx.request.body
   const isHave = await isHaveUsername(username)
   if(isHave[0].isHave){
     ctx.body = utils.fail('用户名已存在！')
   } else {
     const res = await Register(username, md5(password))
-    console.log(res)
+    // console.log(res)
     ctx.body = utils.success(res, '注册成功！请点击按钮返回登录...')    
   }
 })

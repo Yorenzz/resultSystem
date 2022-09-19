@@ -10,6 +10,7 @@ const jwt = require('koa-jwt')
 const index = require('./routes/index')
 const users = require('./routes/users')
 const student = require('./routes/student')
+const result = require('./routes/result')
 const util = require('./utils/util')
 const log4js = require('./utils/log4j')
 const koaBody = require('koa-body')
@@ -68,6 +69,7 @@ app.use(
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
 app.use(student.routes(), student.allowedMethods())
+app.use(result.routes(), result.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {

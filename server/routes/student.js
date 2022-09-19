@@ -13,7 +13,7 @@ const utils = require('../utils/util')
 const fs = require('fs')
 const path = require('path')
 const send = require('koa-send')
-const { host } = require('../config')
+const { getAdvantage } = require('../server/result')
 
 router.prefix('/student')
 
@@ -60,7 +60,8 @@ router.get('/getStudentInformation', async (ctx, next) => {
       children: three,
     },
   ]
-  // console.log(treeData);
+  const res = await getAdvantage(1, 2)
+  console.log('eee', res);
   ctx.body = utils.success({ studentList, treeData })
 })
 
@@ -70,14 +71,6 @@ router.get('/remoteSearchStudent', async (ctx, next) => {
   const likeList = await keywordSearch(keyword)
   console.log(likeList)
   ctx.body = utils.success(likeList)
-})
-
-router.get('/studentResult', async (ctx, next) => {
-  const { id } = ctx.request.query
-  const result = await getResult(id)
-  const information = await getPerStudentMessage(id)
-  console.log(result)
-  ctx.body = utils.success({ result, information })
 })
 
 router.post('/changeStudentInformation', async (ctx, next) => {

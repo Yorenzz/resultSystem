@@ -7,7 +7,6 @@ import {
 } from '../../api'
 import {
   CLASS_TRANSLATE,
-  GRADE_SUBJECT,
   GRADE_TRANSLATE,
 } from '../../constant'
 

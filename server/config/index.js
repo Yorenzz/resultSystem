@@ -62,4 +62,20 @@ module.exports = {
     Composite: '综合',
     Sport: '体育',
   },
+  CLASS_TRANSLATE: {
+    1: '一班',
+    2: '二班',
+    3: '三班',
+    4: '四班',
+    5: '五班',
+    6: '六班',
+  },
+  CLASS_TRANSLATE_REVERSE: {
+    一班: 1,
+    二班: 2,
+    三班: 3,
+    四班: 4,
+    五班: 5,
+    六班: 6,
+  },
 }

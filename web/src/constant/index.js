@@ -31,8 +31,6 @@ export const GRADE_SUBJECT = [
     'History',
     'Physical',
     'Chemistry',
-    'Biology',
-    'Geography',
     'Composite',
     'Sport',
     'Total',

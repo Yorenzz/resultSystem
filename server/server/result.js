@@ -33,23 +33,21 @@ const getAdvantage = (grade, Class, testTime = time) => {
   )
 }
 
-const getPerAdvantageByGrade = (grade, testTime = 1) => {
+const getPerAdvantageByGrade = async (grade, testTime = 1) => {
+  console.log('grade', grade)
+  const perClass = await getClass(grade)
   return Promise.all(
-    GRADE_SUBJECT[grade].map(async item => {
-      const perClass = await getClass(grade)
-      console.log(perClass);
-      let sql = `select`
-      sql =
-        sql +
-        ` AVG(${item}) as ${item} from ${table.resultDetail} where ${item} is not null and TestTime = ${testTime} and Grade = ${grade}`
-      // console.log(sql);
-      const classAdv = []
-      classAdv.push(Promise.all(
-        perClass.map(item=>{
-          // console.log(`${sql} and Class = ${item.Class}`);
-        }))
+    perClass.map(perClass => {
+      return Promise.all(
+        GRADE_SUBJECT[grade].map(async item => {
+          let sql = `select`
+          sql =
+            sql +
+            ` AVG(${item}) as ${item} from ${table.resultDetail} where ${item} is not null and TestTime = ${testTime} and Grade = ${grade} and Class = ${perClass.Class}`
+          console.log(sql)
+          return (await querySql(sql))[0]
+        }),
       )
-      return classAdv
     }),
   )
 }
@@ -58,5 +56,5 @@ module.exports = {
   getAdvantage,
   getResult,
   getNewTestTime,
-  getPerAdvantageByGrade
+  getPerAdvantageByGrade,
 }

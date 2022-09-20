@@ -5,17 +5,20 @@ import {
   watch,
   reactive,
   onMounted,
-  watchEffect
+  watchEffect,
 } from 'vue'
 import { useClassStore } from '../store/classMessage.js'
 import {
   CLASS_TRANSLATE,
   CLASS_TRANSLATE_REVERSE,
   SUBJECT_TRANSLATE,
-  GRADE_SUBJECT
+  GRADE_SUBJECT,
 } from '../constant/index.js'
-import { advantageResult, advantageResultByGrade } from '../api/index.js'
-import * as echarts from 'echarts/core';
+import {
+  advantageResult,
+  advantageResultByGrade,
+} from '../api/index.js'
+import * as echarts from 'echarts/core'
 import '../common/echartsUse.js'
 
 const checkedGrade = ref(1)
@@ -26,11 +29,13 @@ const isIndeterminate = ref(true)
 const checkedClass = ref(null)
 const resultAdv = ref([])
 const resultNextAdv = ref([])
+const gradeAdv = ref([])
 let myChart = null
 const loading = reactive({
   table: false,
+  chart: false,
 })
-const chartRef=ref(null)
+const chartRef = ref(null)
 
 const perClass = computed(() => {
   return store
@@ -46,10 +51,31 @@ const classFormat = computed(() => {
   })
 })
 
-const chartAxisData = computed(()=>{
-  return GRADE_SUBJECT[checkedGrade.value].map((item)=>{
-    return SUBJECT_TRANSLATE[item]
-  })
+const chartAxisData = computed(() => {
+  return GRADE_SUBJECT[checkedGrade.value].map(
+    item => {
+      return SUBJECT_TRANSLATE[item]
+    },
+  )
+})
+
+const chartData = computed(() => {
+  return gradeAdv.value.map(
+    (perClassValue, index) => {
+      const perCLassAdv = perClassValue.map(
+        perSubject => {
+          return perSubject[
+            Object.keys(perSubject)[0]
+          ]
+        },
+      )
+      return {
+        name: CLASS_TRANSLATE[index + 1],
+        type: 'bar',
+        data: perCLassAdv,
+      }
+    },
+  )
 })
 
 const handleCheckAllChange = val => {
@@ -85,28 +111,30 @@ const getAdvantageResult = (
     })
 }
 
-const getPerAdvantage = (grade) => {
-  advantageResultByGrade(grade).then((res)=>{
-    console.log(res);
-  })
+const getPerAdvantage = grade => {
+  loading.chart = true
+  advantageResultByGrade(grade)
+    .then(res => {
+      gradeAdv.value = res
+    })
+    .catch(err => {
+      console.warn(err)
+    })
+    .finally(() => {
+      loading.chart = false
+    })
 }
 
-const option = computed(()=>({
+const option = computed(() => ({
   title: {
-      text: '各班平均分柱状图'
-    },
-    tooltip: {},
-    xAxis: {
-      data: chartAxisData.value
-    },
-    yAxis: {},
-    series: [
-      {
-        name: '销量',
-        type: 'bar',
-        data: [5, 20, 36, 10, 10, 20, 23, 34, 34, 34, 34]
-      }
-    ]
+    text: '各班平均分柱状图',
+  },
+  tooltip: {},
+  xAxis: {
+    data: chartAxisData.value,
+  },
+  yAxis: {},
+  series: chartData.value,
 }))
 
 handleCheckAllChange()
@@ -120,18 +148,21 @@ getAdvantageResult(
   checkedClass.value,
   2,
 )
-getPerAdvantage(1)
 
-onMounted(()=>{
+onMounted(() => {
   myChart = echarts.init(chartRef.value)
-  myChart.setOption(option.value)
+  myChart.setOption(option.value, true)
 })
 
 watch(
   () => checkedGrade.value,
   val => {
+    getPerAdvantage(val)
     getAdvantageResult(val, classFormat.value)
-    getAdvantageResult(val, checkedClass.value, 2)
+    getAdvantageResult(val, classFormat.value, 2)
+  },
+  {
+    immediate: true,
   },
 )
 watch(
@@ -140,13 +171,21 @@ watch(
     getAdvantageResult(checkedGrade.value, val)
     getAdvantageResult(checkedGrade.value, val, 2)
   },
+  {
+    immediate: false,
+    deep: true,
+  },
 )
-watch(()=>option.value, val => {
-  myChart.setOption(option.value)
-  console.log(option.value);
-}, {
-  immediate: false
-})
+watch(
+  () => option.value,
+  val => {
+    myChart.setOption(option.value, true)
+  },
+  {
+    immediate: false,
+    deep: true,
+  },
+)
 </script>
 
 <template>
@@ -253,11 +292,14 @@ watch(()=>option.value, val => {
         </el-descriptions>
       </div>
     </div>
-    <div class="advantage-chart" id="main" ref="chartRef">
-
+    <div
+      class="advantage-chart"
+      id="main"
+      ref="chartRef"
+      v-loading="loading.chart"
+    >
     </div>
   </div>
-
 </template>
 
 <style scoped lang="scss">
@@ -301,5 +343,4 @@ watch(()=>option.value, val => {
     width: 100%;
   }
 }
-
 </style>

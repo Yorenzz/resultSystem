@@ -99,3 +99,14 @@ export const advantageResult = (
     data: { grade, Class, testTime },
   })
 }
+
+export const advantageResultByGrade = (
+  grade,
+  testTime = 1,
+) => {
+  return request({
+    method: 'POST',
+    url: '/result/getPerAdvantage',
+    data: { grade, testTime },
+  })
+}

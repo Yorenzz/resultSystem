@@ -8,7 +8,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { createPinia } from 'pinia'
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/style.css'
-
+import './common/echartsUse'
 function useTable(app) {
   app.use(VXETable)
 

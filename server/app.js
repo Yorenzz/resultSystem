@@ -43,8 +43,8 @@ app.use(
 
 // logger
 app.use(async (ctx, next) => {
-  log4js.info(`get params:${JSON.stringify(ctx.request.query)}`)
-  log4js.info(`post params:${JSON.stringify(ctx.request.body)}`)
+  // log4js.info(`get params:${JSON.stringify(ctx.request.query)}`)
+  // log4js.info(`post params:${JSON.stringify(ctx.request.body)}`)
   await next().catch(err => {
     if (err.status === 401) {
       ctx.status = 200

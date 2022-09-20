@@ -1,7 +1,6 @@
 const router = require('koa-router')()
 const utils = require('../utils/util')
-const { getResult, getAdvantage } = require('../server/result')
-const { getPerStudentMessage } = require('../server/student')
+const { getResult, getAdvantage, getPerAdvantageByGrade } = require('../server/result')
 
 router.prefix('/result')
 
@@ -17,6 +16,13 @@ router.post('/getAdvantage', async (ctx, next) => {
   const { grade, Class, testTime } = ctx.request.body
   console.log(testTime)
   const res = await getAdvantage(grade, Class, testTime)
+  ctx.body = utils.success(res)
+})
+
+router.post('/getPerAdvantage', async (ctx, next) => {
+  const { grade, testTime } = ctx.request.body
+  console.log(testTime)
+  const res = await getPerAdvantageByGrade(grade, testTime)
   ctx.body = utils.success(res)
 })
 

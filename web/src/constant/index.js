@@ -33,6 +33,7 @@ export const GRADE_SUBJECT = [
     'Chemistry',
     'Biology',
     'Geography',
+    'Composite',
     'Sport',
     'Total',
   ],

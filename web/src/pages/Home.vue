@@ -8,15 +8,12 @@ import { useClassStore } from '../store/classMessage.js'
 const store = useClassStore()
 const getPerClass = () => {
   getClass(1).then(res => {
-    console.log(res)
     store.setOne(res)
   })
   getClass(2).then(res => {
-    console.log(res)
     store.setTwo(res)
   })
   getClass(3).then(res => {
-    console.log(res)
     store.setThree(res)
   })
 }

@@ -43,6 +43,7 @@ module.exports = {
       'History',
       'Physical',
       'Chemistry',
+      'Composite',
       'Sport',
       'Total',
     ],

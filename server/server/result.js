@@ -44,7 +44,7 @@ const getPerAdvantageByGrade = async (grade, testTime = 1) => {
           sql =
             sql +
             ` AVG(${item}) as ${item} from ${table.resultDetail} where ${item} is not null and TestTime = ${testTime} and Grade = ${grade} and Class = ${perClass.Class}`
-          console.log(sql)
+          // console.log(sql)
           return (await querySql(sql))[0]
         }),
       )

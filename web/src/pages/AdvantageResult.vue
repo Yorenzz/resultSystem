@@ -31,11 +31,13 @@ const resultAdv = ref([])
 const resultNextAdv = ref([])
 const gradeAdv = ref([])
 let myChart = null
+let totalChart = null
 const loading = reactive({
   table: false,
   chart: false,
 })
 const chartRef = ref(null)
+const totalChartRef = ref(null)
 
 const perClass = computed(() => {
   return store
@@ -52,14 +54,19 @@ const classFormat = computed(() => {
 })
 
 const chartAxisData = computed(() => {
-  return GRADE_SUBJECT[checkedGrade.value].map(
+  const arr = GRADE_SUBJECT[checkedGrade.value].map(
     item => {
       return SUBJECT_TRANSLATE[item]
     },
   )
+  arr.pop()
+  return arr
 })
 
+const totalAdvData = ref([])
+
 const chartData = computed(() => {
+  totalAdvData.value = []
   return gradeAdv.value.map(
     (perClassValue, index) => {
       const perCLassAdv = perClassValue.map(
@@ -69,6 +76,13 @@ const chartData = computed(() => {
           ]
         },
       )
+      const total = perCLassAdv.pop()
+      console.log(total);
+      totalAdvData.value.push({
+        name: CLASS_TRANSLATE[index + 1],
+        type: 'bar',
+        data: [total],
+      })
       return {
         name: CLASS_TRANSLATE[index + 1],
         type: 'bar',
@@ -116,6 +130,9 @@ const getPerAdvantage = grade => {
   advantageResultByGrade(grade)
     .then(res => {
       gradeAdv.value = res
+  myChart.setOption(option.value, true)
+
+  totalChart.setOption(totalOption.value, true)
     })
     .catch(err => {
       console.warn(err)
@@ -129,12 +146,28 @@ const option = computed(() => ({
   title: {
     text: '各班平均分柱状图',
   },
+  legend: {data:perClass.value},
   tooltip: {},
   xAxis: {
     data: chartAxisData.value,
   },
   yAxis: {},
   series: chartData.value,
+}))
+
+const totalOption = computed(() => ({
+  title: {
+    text: '总分',
+    left: 0,
+    top: 0,
+  },
+  legend: {data:perClass.value},
+  tooltip: {},
+  xAxis: {
+    data: ['总分']
+  },
+  yAxis: {},
+  series: totalAdvData.value
 }))
 
 handleCheckAllChange()
@@ -151,7 +184,7 @@ getAdvantageResult(
 
 onMounted(() => {
   myChart = echarts.init(chartRef.value)
-  myChart.setOption(option.value, true)
+  totalChart = echarts.init(totalChartRef.value)
 })
 
 watch(
@@ -180,6 +213,16 @@ watch(
   () => option.value,
   val => {
     myChart.setOption(option.value, true)
+  },
+  {
+    immediate: false,
+    deep: true,
+  },
+)
+watch(
+  () => totalOption.value,
+  val => {
+    totalChart.setOption(totalOption.value, true)
   },
   {
     immediate: false,
@@ -292,13 +335,22 @@ watch(
         </el-descriptions>
       </div>
     </div>
-    <div
-      class="advantage-chart"
-      id="main"
-      ref="chartRef"
-      v-loading="loading.chart"
-    >
+    <div class="chart">
+      <div
+        class="advantage-chart"
+        id="main"
+        ref="chartRef"
+        v-loading="loading.chart"
+      >
+      </div>
+      <div
+        class="total-adv-chart"
+        id="total"
+        ref="totalChartRef"
+        v-loading="loading.chart"
+      ></div>
     </div>
+    
   </div>
 </template>
 
@@ -337,10 +389,20 @@ watch(
       }
     }
   }
-  .advantage-chart {
-    margin-top: 64px;
-    height: 500px;
-    width: 100%;
+  .chart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .advantage-chart {
+      flex: 3;
+      margin-top: 32px;
+      height: 500px;
+    }
+    .total-adv-chart {
+      flex: 1;
+      margin-top: 32px;
+      height: 500px;
+    }
   }
 }
 </style>

@@ -12,6 +12,7 @@ import {
 
 const tableData = ref([])
 const ruleFormRef = ref(null)
+const addFormRef = ref(null)
 const loading = reactive({
   table: false,
   button: false,
@@ -27,6 +28,12 @@ let editData = reactive({
   changeField: null,
   changeTitle: '',
   originalAll: {},
+})
+const addData = reactive({
+  name: '',
+  grade: null,
+  Class: null,
+  id: null,
 })
 const isEdit = ref(false)
 const isAdd = ref(false)
@@ -99,10 +106,51 @@ const dataPass = (rule, value, callback) => {
   }
 }
 
+const namePass = (rule, value, callback) => {
+  const reg = /^[\u4E00-\u9FA5]+$/
+  if (!reg.test(value)) {
+    callback(new Error('请输入中文姓名！'))
+  }
+  else {
+    callback()
+  }
+}
+
+const gradePass = (rule, value, callback) => {
+  if (value > 3 || value < 1) {
+    callback(new Error('请输入数字1-3！'))
+  }
+  else {
+    callback()
+  }
+}
+const classPass = (rule, value, callback) => {
+  if (value > 9 || value < 1) {
+    callback(new Error('请输入数字1-9！'))
+  }
+  else {
+    callback()
+  }
+}
+const idPass = (rule, value, callback) => {
+  if (value > 99 || value < 1) {
+    callback(new Error('请输入数字1-99！'))
+  }
+  else {
+    callback()
+  }
+}
 const rules = reactive({
   nowData: [
     { validator: dataPass, trigger: 'blur' },
   ],
+})
+
+const addRule = reactive({
+  name: [{ validator: namePass, trigger: 'blur' },],
+  grade: [{ validator: gradePass, trigger: 'blur' },],
+  Class: [{ validator: classPass, trigger: 'blur' },],
+  id: [{ validator: idPass, trigger: 'blur' },],
 })
 
 const editMode = () => {
@@ -153,6 +201,12 @@ const editSubmit = () => {
     } else {
       changeStudent()
     }
+  })
+}
+
+const addSubmit = () => {
+  addFormRef.value.validate().then(()=>{
+
   })
 }
 
@@ -380,6 +434,23 @@ getInformation()
           >
         </div>
       </div>
+      <div class="add" v-if="isAdd">
+        <el-form :model="addData" :rules="addRule" ref="addFormRef">
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="addData.name"></el-input>
+          </el-form-item>
+          <el-form-item label="年级" prop="grade">
+            <el-input v-model="addData.grade"></el-input>
+          </el-form-item>
+          <el-form-item label="班级" prop="Class">
+            <el-input v-model="addData.Class"></el-input>
+          </el-form-item>
+          <el-form-item label="座号" prop="id">
+            <el-input v-model="addData.id"></el-input>
+          </el-form-item>
+        </el-form>
+        <el-button type="primary" @click="addSubmit">提交</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -459,6 +530,16 @@ getInformation()
           color: white;
         }
       }
+    }
+    .add {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 100px;
     }
   }
 }

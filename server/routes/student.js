@@ -61,15 +61,12 @@ router.get('/getStudentInformation', async (ctx, next) => {
     },
   ]
   const res = await getAdvantage(1, 2)
-  console.log('eee', res);
   ctx.body = utils.success({ studentList, treeData })
 })
 
 router.get('/remoteSearchStudent', async (ctx, next) => {
-  console.log(ctx.request.query)
   const { keyword } = ctx.request.query
   const likeList = await keywordSearch(keyword)
-  console.log(likeList)
   ctx.body = utils.success(likeList)
 })
 
@@ -79,45 +76,39 @@ router.post('/changeStudentInformation', async (ctx, next) => {
     const isHave = await isHaveStudent(ID)
     if (isHave[0].isHave !== 1) {
       const res = await changeInformation(ID, changeData, type)
-      console.log(res)
-      ctx.body = utils.success('test', '修改成功')
+      ctx.body = utils.success(null, '修改成功')
     } else {
       ctx.body = utils.fail('已存在相同学生编号，请重试')
     }
   } else if (type === 'Grade') {
     const changeID = replaceNumberByIndex(ID, 1, changeData)
-    console.log(changeID)
     const isHave = await isHaveStudent(changeID)
     if (isHave[0].isHave !== 1) {
       const res = await changeInformation(ID, changeData, type)
       const res2 = await changeInformation(ID, changeID, 'StudentId')
-      console.log(res)
-      ctx.body = utils.success('test', '修改成功')
+      ctx.body = utils.success(null, '修改成功')
     } else {
       ctx.body = utils.fail('更改后年级已存在相同学生编号，请重试')
     }
   } else if (type === 'Class') {
     const changeID = replaceNumberByIndex(ID, 2, changeData)
-    console.log(changeID)
     const isHave = await isHaveStudent(changeID)
     if (isHave[0].isHave !== 1) {
       const res = await changeInformation(ID, changeData, type)
       const res2 = await changeInformation(ID, changeID, 'StudentId')
-      console.log(res)
-      ctx.body = utils.success('test', '修改成功')
+      ctx.body = utils.success(null, '修改成功')
     } else {
       ctx.body = utils.fail('更改后班级已存在相同学生编号，请重试')
     }
   } else {
     const res = await changeInformation(ID, changeData, type)
-    console.log(res)
     ctx.body = utils.success('test', '修改成功')
   }
 })
 
 router.post('/uploadFile', async (ctx, next) => {
   const file = ctx.request.files.file // 获取上传文件
-  console.log(file) // file包含了文件名，文件类型，大小，路径等信息
+  // file包含了文件名，文件类型，大小，路径等信息
   const fileName = file.originalFilename
   const fileObj = fs.readFileSync(file.filepath)
   const excelPath = path.resolve('./public/upload')

@@ -1,6 +1,11 @@
 const router = require('koa-router')()
 const utils = require('../utils/util')
-const { getResult, getAdvantage, getPerAdvantageByGrade } = require('../server/result')
+const {
+  getResult,
+  getAdvantage,
+  getPerAdvantageByGrade,
+} = require('../server/result')
+const { getPerStudentMessage } = require('../server/student')
 
 router.prefix('/result')
 

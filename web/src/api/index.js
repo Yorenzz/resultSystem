@@ -54,6 +54,27 @@ export const changeStudentInformation = (
   })
 }
 
+export const addStudentInformation = (
+  name,
+  grade,
+  Class,
+  id,
+) => {
+  return request({
+    method: 'POST',
+    url: '/student/addStudentInformation',
+    data: { name, grade, Class, id },
+  })
+}
+
+export const deleteStudentInformation = id => {
+  return request({
+    method: 'POST',
+    url: '/student/deleteStudentInformation',
+    data: { id },
+  })
+}
+
 export const uploadFile = file => {
   return request({
     method: 'POST',

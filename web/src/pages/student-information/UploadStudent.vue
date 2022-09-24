@@ -37,7 +37,7 @@ const flag = ref([])
 const tableData = computed(() => {
   return excelData.value[0]?.results.map(item => {
     return {
-      StudentId: item['座号'],
+      StudentID: item['座号'],
       Name: item['姓名'],
       Class: item['班级'],
       Grade: item['年级'],
@@ -247,6 +247,7 @@ const downloadTemplate = () => {
       <vxe-grid
         :columns="column"
         :data="tableData"
+        align="center"
         height="800px"
         show-overflow
       />

@@ -31,8 +31,8 @@ const treeRef = ref(null)
 
 const handleNodeClick = data => {
   // console.log('data', data);
-  if (data?.StudentId) {
-    selectStudent.value = data.StudentId
+  if (data?.StudentID) {
+    selectStudent.value = data.StudentID
     emit('update:student', selectStudent.value)
   }
 }
@@ -53,7 +53,7 @@ const searchChange = val => {
   emit('update:student', selectStudent.value)
   treeRef.value.setCurrentKey(val)
   setTimeout(() => {
-    document.getElementById(val).scrollIntoView({
+    document.getElementByID(val).scrollIntoView({
       block: 'start',
       behavior: 'smooth',
     })
@@ -78,7 +78,7 @@ const getTreeData = () => {
 getTreeData()
 
 watch(searchStudentID, val => {
-  if(val){
+  if (val) {
     console.log(1, typeof val)
     searchChange(val)
   } else {
@@ -100,14 +100,14 @@ watch(searchStudentID, val => {
           element-loading-background="white"
           accordion
           :data="tree"
-          node-key="StudentId"
+          node-key="StudentID"
           :highlight-current="true"
           @node-click="handleNodeClick"
         >
           <template #default="{ data }">
             <div
               class="tree-node"
-              :id="data.StudentId"
+              :id="data.StudentID"
             >
               {{ data.label }}
             </div>

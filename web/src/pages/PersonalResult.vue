@@ -1,5 +1,10 @@
 <script setup>
-import { reactive, ref, watch, watchEffect } from 'vue'
+import {
+  reactive,
+  ref,
+  watch,
+  watchEffect,
+} from 'vue'
 import { studentResult } from '../api'
 import StudentTree from '../components/StudentTree.vue'
 import SubjectScore from '../components/SubjectScore.vue'
@@ -17,7 +22,7 @@ let perInformation = reactive({
   Class: null,
   Grade: null,
   Name: '',
-  StudentId: null,
+  StudentID: null,
 })
 
 const selectID = ref(null)
@@ -25,7 +30,10 @@ const selectID = ref(null)
 const getResult = id => {
   studentResult(id).then(res => {
     const { result, information } = res
-    scoreList = Object.assign(scoreList, result[0])
+    scoreList = Object.assign(
+      scoreList,
+      result[0],
+    )
     perInformation = Object.assign(
       perInformation,
       information[0],
@@ -43,8 +51,8 @@ watchEffect(() => {
         Class: null,
         Grade: null,
         Name: '',
-        StudentId: null,
-      }
+        StudentID: null,
+      },
     )
   }
 })
@@ -56,11 +64,17 @@ watchEffect(() => {
     <div class="right-content">
       <div class="title">
         {{ perInformation.Name }}
-        {{ CLASS_TRANSLATE[perInformation.Class] }}
-        {{ GRADE_TRANSLATE[perInformation.Grade] }}
+        {{
+          CLASS_TRANSLATE[perInformation.Class]
+        }}
+        {{
+          GRADE_TRANSLATE[perInformation.Grade]
+        }}
       </div>
       <div v-if="selectID" class="result">
-        <template v-for="(value, key) in scoreList">
+        <template
+          v-for="(value, key) in scoreList"
+        >
           <SubjectScore
             :score="value"
             :subject="key"

@@ -1,25 +1,29 @@
 <script setup>
-import { ElMessageBox } from 'element-plus';
+import { ElMessageBox } from 'element-plus'
 import { computed, reactive, ref } from 'vue'
 import {
   getStudentInformation,
   changeStudentInformation,
+  addStudentInformation,
+  deleteStudentInformation,
 } from '../../api'
 import {
   CLASS_TRANSLATE,
   GRADE_TRANSLATE,
 } from '../../constant'
+import { InfoFilled } from '@element-plus/icons-vue'
 
 const tableData = ref([])
 const ruleFormRef = ref(null)
 const addFormRef = ref(null)
+const tableRef = ref(null)
 const loading = reactive({
   table: false,
   button: false,
 })
-const dataVerify = computed(()=>{
-  return tableData.value.map((item)=>{
-    return item.StudentId
+const dataVerify = computed(() => {
+  return tableData.value.map(item => {
+    return item.StudentID
   })
 })
 let editData = reactive({
@@ -35,46 +39,102 @@ const addData = reactive({
   Class: null,
   id: null,
 })
+const deleteData = ref([])
+const deleteConfirm = ref(false)
 const isEdit = ref(false)
 const isAdd = ref(false)
-const column = [
-  {
-    field: 'StudentId',
-    title: '编号',
-    slots: {
-      default: 'id',
-    },
-  },
-  {
-    field: 'Name',
-    title: '姓名',
-    slots: {
-      default: 'name',
-    },
-  },
-  {
-    field: 'Grade',
-    title: '年级',
-    slots: {
-      default: 'grade',
-    },
-  },
-  {
-    field: 'Class',
-    title: '班级',
-    slots: {
-      default: 'class',
-    },
-  },
-]
+
+const toolbar = computed(() => {
+  return isAdd.value
+    ? {
+        custom: false,
+        slots: {
+          buttons: 'toolbar_buttons',
+        },
+      }
+    : {}
+})
+const checkboxChangeEvent = data => {
+  deleteData.value = data.records.map(item => {
+    return item.StudentID
+  })
+}
+const column = computed(() => {
+  if (isAdd.value) {
+    return [
+      { type: 'seq', width: 60 },
+      { type: 'checkbox', width: 50 },
+      {
+        field: 'StudentID',
+        title: '编号',
+        slots: {
+          default: 'id',
+        },
+      },
+      {
+        field: 'Name',
+        title: '姓名',
+        slots: {
+          default: 'name',
+        },
+      },
+      {
+        field: 'Grade',
+        title: '年级',
+        slots: {
+          default: 'grade',
+        },
+      },
+      {
+        field: 'Class',
+        title: '班级',
+        slots: {
+          default: 'class',
+        },
+      },
+      {
+        title: '操作',
+        slots: { default: 'operate' },
+      },
+    ]
+  } else {
+    return [
+      {
+        field: 'StudentID',
+        title: '编号',
+        slots: {
+          default: 'id',
+        },
+      },
+      {
+        field: 'Name',
+        title: '姓名',
+        slots: {
+          default: 'name',
+        },
+      },
+      {
+        field: 'Grade',
+        title: '年级',
+        slots: {
+          default: 'grade',
+        },
+      },
+      {
+        field: 'Class',
+        title: '班级',
+        slots: {
+          default: 'class',
+        },
+      },
+    ]
+  }
+})
 
 const dataPass = (rule, value, callback) => {
   const reg = /^[\u4E00-\u9FA5]+$/
   const IDreg = /^[1-3][1-9](0[1-9]|[1-9][0-9])$/
-  if (
-    !value ||
-    value === editData.originalData
-  ) {
+  if (!value || value === editData.originalData) {
     callback(new Error('请输入修改数据'))
   } else if (
     editData.changeField === 'Name' &&
@@ -86,20 +146,20 @@ const dataPass = (rule, value, callback) => {
     isNaN(value - 0)
   ) {
     callback(new Error('请输入整数数字！'))
-  } else if(
-    editData.changeField === 'StudentId' &&
+  } else if (
+    editData.changeField === 'StudentID' &&
     !IDreg.test(value)
-  ){
+  ) {
     callback('请检查编号格式！')
-  } else if(
+  } else if (
     editData.changeField === 'Grade' &&
     (value < 1 || value > 3)
-  ){
+  ) {
     callback('请检查年级格式！')
-  } else if(
+  } else if (
     editData.changeField === 'Class' &&
     (value < 1 || value > 9)
-  ){
+  ) {
     callback('请检查班级格式！')
   } else {
     callback()
@@ -110,8 +170,7 @@ const namePass = (rule, value, callback) => {
   const reg = /^[\u4E00-\u9FA5]+$/
   if (!reg.test(value)) {
     callback(new Error('请输入中文姓名！'))
-  }
-  else {
+  } else {
     callback()
   }
 }
@@ -119,24 +178,21 @@ const namePass = (rule, value, callback) => {
 const gradePass = (rule, value, callback) => {
   if (value > 3 || value < 1) {
     callback(new Error('请输入数字1-3！'))
-  }
-  else {
+  } else {
     callback()
   }
 }
 const classPass = (rule, value, callback) => {
   if (value > 9 || value < 1) {
     callback(new Error('请输入数字1-9！'))
-  }
-  else {
+  } else {
     callback()
   }
 }
 const idPass = (rule, value, callback) => {
   if (value > 99 || value < 1) {
     callback(new Error('请输入数字1-99！'))
-  }
-  else {
+  } else {
     callback()
   }
 }
@@ -147,10 +203,16 @@ const rules = reactive({
 })
 
 const addRule = reactive({
-  name: [{ validator: namePass, trigger: 'blur' },],
-  grade: [{ validator: gradePass, trigger: 'blur' },],
-  Class: [{ validator: classPass, trigger: 'blur' },],
-  id: [{ validator: idPass, trigger: 'blur' },],
+  name: [
+    { validator: namePass, trigger: 'blur' },
+  ],
+  grade: [
+    { validator: gradePass, trigger: 'blur' },
+  ],
+  Class: [
+    { validator: classPass, trigger: 'blur' },
+  ],
+  id: [{ validator: idPass, trigger: 'blur' }],
 })
 
 const editMode = () => {
@@ -188,15 +250,57 @@ const initData = () => {
   editData.originalAll = {}
 }
 
+const removeStudent = row => {
+  ElMessageBox.confirm(
+    '确定删除?此操作无法撤销',
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+      closeOnClickModal: false,
+    },
+  )
+    .then(() => {
+      deleteStudentInformation([row.StudentID])
+        .then(res => {
+          console.log(res)
+          getInformation()
+          deleteData.value = []
+        })
+        .catch(err => {
+          console.warn(err)
+        })
+    })
+    .catch(() => {})
+}
+
+const allRemove = () => {
+  deleteConfirm.value = false
+  deleteStudentInformation(deleteData.value)
+    .then(res => {
+      console.log(res)
+      getInformation()
+      deleteData.value = []
+    })
+    .catch(err => {
+      console.warn(err)
+    })
+}
+
 const editSubmit = () => {
   ruleFormRef.value.validate().then(() => {
-    if(editData.changeField === 'StudentId' && (editData.originalData+'').slice(0,2) !== (editData.nowData+'').slice(0,2)){
+    if (
+      editData.changeField === 'StudentID' &&
+      (editData.originalData + '').slice(0, 2) !==
+        (editData.nowData + '').slice(0, 2)
+    ) {
       ElMessageBox.alert(
         '修改类型为编号时不支持修改年级或班级',
         '注意：',
         {
           confirmButtonText: '返回',
-        }
+        },
       )
     } else {
       changeStudent()
@@ -205,21 +309,46 @@ const editSubmit = () => {
 }
 
 const addSubmit = () => {
-  addFormRef.value.validate().then(()=>{
-
+  addFormRef.value.validate().then(() => {
+    addStudent()
   })
 }
 
 const changeStudent = () => {
   loading.button = true
   changeStudentInformation(
-    editData.originalAll.StudentId,
+    editData.originalAll.StudentID,
     editData.nowData,
     editData.changeField,
   )
     .then(res => {
       console.log(res)
       getInformation()
+    })
+    .catch(e => {
+      console.warn(e)
+    })
+    .finally(() => {
+      loading.button = false
+      initData()
+    })
+}
+
+const addStudent = () => {
+  loading.button = true
+  addStudentInformation(
+    addData.name,
+    addData.grade,
+    addData.Class,
+    addData.id,
+  )
+    .then(res => {
+      console.log(res)
+      getInformation()
+      addData.grade = null
+      addData.name = null
+      addData.Class = null
+      addData.id = null
     })
     .catch(e => {
       console.warn(e)
@@ -251,24 +380,67 @@ getInformation()
   <div class="student-content">
     <div class="table-content">
       <vxe-grid
+        ref="tableRef"
         border
         align="center"
         :data="tableData"
         :columns="column"
         show-overflow
         height="auto"
+        :toolbarConfig="toolbar"
         :loading="loading.table"
+        @checkbox-change="checkboxChangeEvent"
+        @checkbox-all="checkboxChangeEvent"
       >
+        <template #toolbar_buttons v-if="isAdd">
+          <el-popover
+            v-model:visible="deleteConfirm"
+            trigger="click"
+            placement="bottom"
+            :width="160"
+          >
+            <p>
+              确定删除选中学生信息?此操作无法撤销
+            </p>
+            <div
+              style="text-align: right; margin: 0"
+            >
+              <el-button
+                size="small"
+                text
+                @click="deleteConfirm = false"
+              >
+                取消
+              </el-button>
+              <el-button
+                size="small"
+                type="primary"
+                @click="allRemove"
+              >
+                确定
+              </el-button>
+            </div>
+            <template #reference>
+              <el-button
+                :disabled="
+                  deleteData.length === 0
+                "
+              >
+                批量删除
+              </el-button>
+            </template>
+          </el-popover>
+        </template>
         <template #id="{ row, column }">
           <span v-if="!isEdit">{{
-            row.StudentId
+            row.StudentID
           }}</span>
           <el-button
             link
             type="primary"
             v-else
             @click="handleEditData(row, column)"
-            >{{ row.StudentId }}</el-button
+            >{{ row.StudentID }}</el-button
           >
         </template>
         <template #name="{ row, column }">
@@ -305,6 +477,13 @@ getInformation()
             v-else
             @click="handleEditData(row, column)"
             >{{ row.Class }}</el-button
+          >
+        </template>
+        <template #operate="{ row }">
+          <vxe-button
+            title="删除"
+            @click="removeStudent(row)"
+            >删除</vxe-button
           >
         </template>
       </vxe-grid>
@@ -346,15 +525,16 @@ getInformation()
         >
           <el-card
             shadow="never"
-            style="display: flex;"
+            style="display: flex"
           >
             <div class="card-type">
-              编辑类型：{{
-                editData.changeTitle
-              }}
-              <div 
+              编辑类型：{{ editData.changeTitle }}
+              <div
                 class="icon-edit-id"
-                v-if="editData.changeField === 'StudentId'"
+                v-if="
+                  editData.changeField ===
+                  'StudentID'
+                "
               >
                 <el-popover
                   placement="bottom"
@@ -363,13 +543,11 @@ getInformation()
                   content="编号首位代表年级，第二次代表班级，最后两位代表座号，编辑编号时不支持更改前两位"
                 >
                   <template #reference>
-                    <el-icon
-                      color="#666c77"
-                    >
+                    <el-icon color="#666c77">
                       <QuestionFilled />
                     </el-icon>
                   </template>
-                </el-popover>              
+                </el-popover>
               </div>
 
               &emsp;数据归属：
@@ -383,7 +561,7 @@ getInformation()
                   editData.originalAll.Class
                 ]
               }}
-              {{ editData.originalAll.Name }}            
+              {{ editData.originalAll.Name }}
             </div>
           </el-card>
         </div>
@@ -435,21 +613,37 @@ getInformation()
         </div>
       </div>
       <div class="add" v-if="isAdd">
-        <el-form :model="addData" :rules="addRule" ref="addFormRef">
+        <el-form
+          :model="addData"
+          :rules="addRule"
+          ref="addFormRef"
+        >
           <el-form-item label="姓名" prop="name">
-            <el-input v-model="addData.name"></el-input>
+            <el-input
+              v-model="addData.name"
+            ></el-input>
           </el-form-item>
           <el-form-item label="年级" prop="grade">
-            <el-input v-model="addData.grade"></el-input>
+            <el-input
+              v-model="addData.grade"
+            ></el-input>
           </el-form-item>
           <el-form-item label="班级" prop="Class">
-            <el-input v-model="addData.Class"></el-input>
+            <el-input
+              v-model="addData.Class"
+            ></el-input>
           </el-form-item>
           <el-form-item label="座号" prop="id">
-            <el-input v-model="addData.id"></el-input>
+            <el-input
+              v-model="addData.id"
+            ></el-input>
           </el-form-item>
         </el-form>
-        <el-button type="primary" @click="addSubmit">提交</el-button>
+        <el-button
+          type="primary"
+          @click="addSubmit"
+          >提交</el-button
+        >
       </div>
     </div>
   </div>
@@ -460,8 +654,8 @@ getInformation()
   display: flex;
   .table-content {
     height: calc(100vh - 154px);
-    width: 500px;
-    margin: 32px;
+    width: 550px;
+    margin: 10px 32px 32px;
   }
   .edit-content {
     flex: 1;

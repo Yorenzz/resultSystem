@@ -7,6 +7,8 @@ const {
   keywordSearch,
   changeInformation,
   isHaveStudent,
+  addInformation,
+  deleteInformation,
 } = require('../server/student')
 const { replaceNumberByIndex } = require('../utils/util')
 const utils = require('../utils/util')
@@ -72,11 +74,11 @@ router.get('/remoteSearchStudent', async (ctx, next) => {
 
 router.post('/changeStudentInformation', async (ctx, next) => {
   const { ID, changeData, type } = ctx.request.body
-  if (type === 'StudentId') {
+  if (type === 'StudentID') {
     const isHave = await isHaveStudent(ID)
     if (isHave[0].isHave !== 1) {
       const res = await changeInformation(ID, changeData, type)
-      ctx.body = utils.success(null, '修改成功')
+      ctx.body = utils.success(res, '修改成功')
     } else {
       ctx.body = utils.fail('已存在相同学生编号，请重试')
     }
@@ -85,7 +87,7 @@ router.post('/changeStudentInformation', async (ctx, next) => {
     const isHave = await isHaveStudent(changeID)
     if (isHave[0].isHave !== 1) {
       const res = await changeInformation(ID, changeData, type)
-      const res2 = await changeInformation(ID, changeID, 'StudentId')
+      const res2 = await changeInformation(ID, changeID, 'StudentID')
       ctx.body = utils.success(null, '修改成功')
     } else {
       ctx.body = utils.fail('更改后年级已存在相同学生编号，请重试')
@@ -95,15 +97,36 @@ router.post('/changeStudentInformation', async (ctx, next) => {
     const isHave = await isHaveStudent(changeID)
     if (isHave[0].isHave !== 1) {
       const res = await changeInformation(ID, changeData, type)
-      const res2 = await changeInformation(ID, changeID, 'StudentId')
-      ctx.body = utils.success(null, '修改成功')
+      const res2 = await changeInformation(ID, changeID, 'StudentID')
+      ctx.body = utils.success({ res, res2 }, '修改成功')
     } else {
       ctx.body = utils.fail('更改后班级已存在相同学生编号，请重试')
     }
   } else {
     const res = await changeInformation(ID, changeData, type)
-    ctx.body = utils.success('test', '修改成功')
+    ctx.body = utils.success(res, '修改成功')
   }
+})
+
+router.post('/addStudentInformation', async (ctx, next) => {
+  let { name, grade, Class, id } = ctx.request.body
+  id = id < 10 ? '0' + id : id
+  const ID = '' + grade + Class + id
+  console.log(ID)
+  const isHave = await isHaveStudent(ID)
+  if (isHave[0].isHave !== 1) {
+    const res = await addInformation(ID, name, grade, Class)
+    ctx.body = utils.success(res, '添加成功')
+  } else {
+    ctx.body = utils.fail('已存在相同学生编号，请重试')
+  }
+})
+
+router.post('/deleteStudentInformation', async (ctx, next) => {
+  let { id } = ctx.request.body
+  console.log(id)
+  const res = await deleteInformation(id)
+  ctx.body = utils.success(res, '删除成功')
 })
 
 router.post('/uploadFile', async (ctx, next) => {
@@ -118,7 +141,7 @@ router.post('/uploadFile', async (ctx, next) => {
 
 router.get('/templateLink', async (ctx, next) => {
   ctx.body = utils.success(
-    `http://localhost:3000/student/downloadStudentTemplate`,
+    `http://175.178.115.221:3000/student/downloadStudentTemplate`,
   )
 })
 

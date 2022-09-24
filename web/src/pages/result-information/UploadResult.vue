@@ -36,8 +36,9 @@ const flag = ref([])
 
 const tableData = computed(() => {
   return excelData.value[0]?.results.map(item => {
+    console.log(item)
     return {
-      StudentId: item['座号'],
+      StudentID: item['座号'],
       Name: item['姓名'],
       Class: item['班级'],
       Grade: item['年级'],
@@ -46,11 +47,9 @@ const tableData = computed(() => {
 })
 
 const submitDisabled = computed(() => {
-  if (!flag.value.length && file.value.length) {
-    return false
-  } else {
-    return true
-  }
+  return !(
+    !flag.value.length && file.value.length
+  )
 })
 
 const header = computed(() => {

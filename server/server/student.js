@@ -20,12 +20,12 @@ const getClass = grade => {
 
 const getResult = id => {
   return querySql(
-    `select Chinese, Math, English, Politics, History, Physical, Chemistry, Biology, Geography, Sport, Composite, Total from ${table.result} where StudentId = '${id}' and TestTime = '1'`,
+    `select Chinese, Math, English, Politics, History, Physical, Chemistry, Biology, Geography, Sport, Composite, Total from ${table.result} where StudentID = '${id}' and TestTime = '1'`,
   )
 }
 
 const getPerStudentMessage = id => {
-  return querySql(`select * from ${table.student} where StudentId = '${id}]'`)
+  return querySql(`select * from ${table.student} where StudentID = '${id}]'`)
 }
 
 const keywordSearch = keyword => {
@@ -36,13 +36,30 @@ const keywordSearch = keyword => {
 
 const changeInformation = (ID, changeData, type) => {
   return querySql(
-    `update ${table.student} set ${type} = '${changeData}' where StudentId = '${ID}'`,
+    `update ${table.student} set ${type} = '${changeData}' where StudentID = '${ID}'`,
+  )
+}
+
+const addInformation = (ID, name, grade, Class) => {
+  return querySql(
+    `insert into ${table.student} (StudentID, Name, Grade, Class) values (${ID}, '${name}', ${grade}, ${Class})`,
+  )
+}
+
+const deleteInformation = id => {
+  return Promise.all(
+    id.map(async item => {
+      console.log(item, 'id')
+      return (
+        await querySql(`delete from ${table.student} where StudentID = ${item}`)
+      )[0]
+    }),
   )
 }
 
 const isHaveStudent = ID => {
   return querySql(
-    `select COUNT(StudentId) as isHave from ${table.student} where StudentId = '${ID}'`,
+    `select COUNT(StudentID) as isHave from ${table.student} where StudentID = '${ID}'`,
   )
 }
 
@@ -54,4 +71,6 @@ module.exports = {
   keywordSearch,
   changeInformation,
   isHaveStudent,
+  addInformation,
+  deleteInformation,
 }

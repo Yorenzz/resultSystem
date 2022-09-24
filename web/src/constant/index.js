@@ -77,7 +77,7 @@ export const GRADE_TRANSLATE = {
 }
 
 export const STUDENT_KEY_TRANSLATE = {
-  座号: 'StudentId',
+  座号: 'StudentID',
   姓名: 'Name',
   班级: 'Class',
   年级: 'Grade',

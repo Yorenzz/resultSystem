@@ -21,12 +21,11 @@ const loading = reactive({
 })
 const handleChange = () => {
   console.log(1)
-  if(!search.studentID){
+  if (!search.studentID) {
     emit('update:student', null)
   } else {
     emit('update:student', search.studentID)
   }
-  
 }
 const remoteMethod = keyword => {
   console.log(keyword)
@@ -61,9 +60,9 @@ const remoteMethod = keyword => {
       >
         <el-option
           v-for="item in search.searchList"
-          :key="`${item.Name}-${item.StudentId}`"
+          :key="`${item.Name}-${item.StudentID}`"
           :label="item.Name"
-          :value="item.StudentId"
+          :value="item.StudentID"
         />
       </el-option-group>
     </el-select>

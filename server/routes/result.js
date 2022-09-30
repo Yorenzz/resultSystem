@@ -4,6 +4,7 @@ const {
   getResult,
   getAdvantage,
   getPerAdvantageByGrade,
+  getResultRank,
 } = require('../server/result')
 const { getPerStudentMessage } = require('../server/student')
 
@@ -25,6 +26,12 @@ router.post('/getAdvantage', async (ctx, next) => {
 router.post('/getPerAdvantage', async (ctx, next) => {
   const { grade, testTime } = ctx.request.body
   const res = await getPerAdvantageByGrade(grade, testTime)
+  ctx.body = utils.success(res)
+})
+
+router.post('/getResultRank', async (ctx, next) => {
+  const { grade, Class, subject } = ctx.request.body
+  const res = await getResultRank(grade, Class, subject)
   ctx.body = utils.success(res)
 })
 

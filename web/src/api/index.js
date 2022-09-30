@@ -131,3 +131,11 @@ export const advantageResultByGrade = (
     data: { grade, testTime },
   })
 }
+
+export const getRank=(grade, Class, subject)=>{
+  return request({
+    method: 'POST',
+    url: '/result/getResultRank',
+    data: { grade, Class, subject }
+  })
+}

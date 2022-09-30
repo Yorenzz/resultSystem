@@ -52,9 +52,19 @@ const getPerAdvantageByGrade = async (grade, testTime = 1) => {
   )
 }
 
+const getResultRank = (grade, Class, subject) => {
+  console.log(grade, Class, subject);
+  if(Class){
+    return querySql(`SELECT ${subject}, StudentID, Class, Name, rank() over (ORDER BY ${subject} DESC) t_rank FROM ${table.resultDetail} where Grade = ${grade} and Class = ${Class} and ${subject} is not null ORDER BY '${subject}' DESC`)
+  } else {
+    return querySql(`SELECT ${subject}, StudentID, Class, Name, rank() over (ORDER BY ${subject} DESC) t_rank FROM ${table.resultDetail} where Grade = ${grade} and ${subject} is not null ORDER BY '${subject}' DESC`)
+  }
+}
+
 module.exports = {
   getAdvantage,
   getResult,
   getNewTestTime,
   getPerAdvantageByGrade,
+  getResultRank
 }

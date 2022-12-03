@@ -1,9 +1,11 @@
 <script setup>
-import { User, Lock } from '@element-plus/icons-vue'
+import {
+  User,
+  Lock,
+} from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
 import { Login } from '../api/index.js'
 import { useRouter } from 'vue-router'
-import storage from '../utils/storage.js'
 import { userInfoStore } from '../store/index.js'
 
 const store = userInfoStore()
@@ -29,8 +31,12 @@ const passwordRules = (rule, value, callback) => {
   }
 }
 const rules = reactive({
-  username: [{ validator: usernameRule, trigger: 'blur' }],
-  password: [{ validator: passwordRules, trigger: 'blur' }],
+  username: [
+    { validator: usernameRule, trigger: 'blur' },
+  ],
+  password: [
+    { validator: passwordRules, trigger: 'blur' },
+  ],
 })
 const submit = () => {
   loading.value = true
@@ -40,12 +46,17 @@ const submit = () => {
       Login(userData.username, userData.password)
         .then(res => {
           const { username, role, token } = res
-          store.saveUserInfo(username, role, token)
+          store.saveUserInfo(
+            username,
+            role,
+            token,
+          )
           router.push('/')
         })
         .catch(err => {
           // console.log(err)
-        }).finally(()=>{
+        })
+        .finally(() => {
           loading.value = false
         })
     })
@@ -89,7 +100,9 @@ const register = () => {
           >
             登录
           </el-button>
-          <el-button @click="register">注册</el-button>
+          <el-button @click="register"
+            >注册</el-button
+          >
         </div>
       </el-form-item>
     </el-form>

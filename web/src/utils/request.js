@@ -7,7 +7,7 @@ import { TOKEN_KEY } from '../config'
 
 const service = axios.create({
   baseURL: config.baseApi,
-  timeout: 8000,
+  timeout: 12000,
 })
 
 service.interceptors.request.use(req => {

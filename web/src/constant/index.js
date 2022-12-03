@@ -52,6 +52,25 @@ export const SUBJECT_TRANSLATE = {
   Sport: '体育',
 }
 
+export const STUDENT_KEY_TRANSLATE = {
+  座号: 'StudentID',
+  姓名: 'Name',
+  班级: 'Class',
+  年级: 'Grade',
+  语文: 'Chinese',
+  数学: 'Math',
+  英语: 'English',
+  道法: 'Politics',
+  物理: 'Physical',
+  历史: 'History',
+  化学: 'Chemistry',
+  生物: 'Biology',
+  地理: 'Geography',
+  总分: 'Total',
+  综合: 'Composite',
+  体育: 'Sport',
+}
+
 export const CLASS_TRANSLATE = {
   1: '一班',
   2: '二班',
@@ -60,6 +79,15 @@ export const CLASS_TRANSLATE = {
   5: '五班',
   6: '六班',
 }
+
+export const CLASS_MAP = [
+  '一班',
+  '二班',
+  '三班',
+  '四班',
+  '五班',
+  '六班',
+]
 
 export const CLASS_TRANSLATE_REVERSE = {
   一班: 1,
@@ -74,13 +102,6 @@ export const GRADE_TRANSLATE = {
   1: '初一',
   2: '初二',
   3: '初三',
-}
-
-export const STUDENT_KEY_TRANSLATE = {
-  座号: 'StudentID',
-  姓名: 'Name',
-  班级: 'Class',
-  年级: 'Grade',
 }
 
 export const LETTER_TO_NUMBER = [

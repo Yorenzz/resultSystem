@@ -106,7 +106,7 @@ const routes = [
                 '../pages/result-information/TimeResult.vue'
               ),
             meta: {
-              title: '占位',
+              title: '考试次数/类型编辑',
             },
           },
           {

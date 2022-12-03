@@ -9,6 +9,8 @@ const {
   isHaveStudent,
   addInformation,
   deleteInformation,
+  insertStudent,
+  getTestTime,
 } = require('../server/student')
 const { replaceNumberByIndex } = require('../utils/util')
 const utils = require('../utils/util')
@@ -154,6 +156,20 @@ router.get('/downloadStudentTemplate', async (ctx, next) => {
 router.get('/getClass', async (ctx, next) => {
   const { grade } = ctx.request.query
   const res = await getClass(grade)
+  console.log(grade, res)
+  ctx.body = utils.success(res)
+})
+
+router.post('/insertStudent', async (ctx, next) => {
+  const { data } = ctx.request.body
+  const res = await insertStudent(data)
+  console.log(res)
+  ctx.body = utils.success(res, '上传成功')
+  // ctx.body = utils.success(res)
+})
+
+router.get('/getTestTime', async (ctx, next) => {
+  const res = await getTestTime()
   ctx.body = utils.success(res)
 })
 

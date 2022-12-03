@@ -6,6 +6,7 @@ import config, {
 } from '../../config/index.js'
 import { UploadFilled } from '@element-plus/icons-vue'
 import {
+  addResult,
   downloadStudentTemplate,
   uploadFile,
 } from '../../api/index.js'
@@ -33,6 +34,7 @@ const excelData = ref([])
 const uploadRef = ref(null)
 const file = ref([])
 const flag = ref([])
+const loading = ref(false)
 
 const tableData = computed(() => {
   return excelData.value[0]?.results.map(item => {
@@ -42,6 +44,18 @@ const tableData = computed(() => {
       Name: item['姓名'],
       Class: item['班级'],
       Grade: item['年级'],
+      Chinese: item['语文'],
+      Math: item['数学'],
+      English: item['英语'],
+      Politics: item['道法'],
+      Physical: item['物理'],
+      History: item['历史'],
+      Chemistry: item['化学'],
+      Biology: item['生物'],
+      Geography: item['地理'],
+      Total: item['总分'],
+      Composite: item['综合'],
+      Sport: item['体育'],
     }
   })
 })
@@ -61,6 +75,16 @@ const header = computed(() => {
 })
 const submitUpload = () => {
   // uploadRef?.value.submit()
+  loading.value = true
+  addResult(tableData.value)
+    .then(res => {
+      loading.value = false
+      // console.log(res)
+    })
+    .catch(e => {
+      loading.value = false
+      console.warn(e)
+    })
 }
 
 const initFileData = () => {
@@ -142,7 +166,7 @@ function getHeaderRow(sheet) {
         sheet[
           XLSX.utils.encode_cell({ c: W, r: H })
         ]
-      if (!cell) {
+      if (!cell && W < 3) {
         flag.value.push({
           c: LETTER_TO_NUMBER[W + 1],
           r: H + 1,
@@ -237,6 +261,7 @@ const downloadTemplate = () => {
           type="success"
           @click="submitUpload"
           :disabled="submitDisabled"
+          :loading="loading"
         >
           确认上传
         </el-button>
@@ -246,7 +271,8 @@ const downloadTemplate = () => {
       <vxe-grid
         :columns="column"
         :data="tableData"
-        height="800px"
+        align="center"
+        height="700px"
         show-overflow
       />
     </div>

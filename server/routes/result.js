@@ -35,4 +35,18 @@ router.post('/getResultRank', async (ctx, next) => {
   ctx.body = utils.success(res)
 })
 
+router.post('/getResultRank', async (ctx, next) => {
+  const { grade, Class, subject } = ctx.request.body
+  const res = await getResultRank(grade, Class, subject)
+  ctx.body = utils.success(res)
+})
+
+router.post('/insertStudentResult', async (ctx, next) => {
+  const { data } = ctx.request.body
+  const res = await insertStudentResult(data)
+  console.log(res)
+  ctx.body = utils.success(res, '上传成功')
+  // ctx.body = utils.success(res)
+})
+
 module.exports = router

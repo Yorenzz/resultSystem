@@ -53,12 +53,38 @@ const getPerAdvantageByGrade = async (grade, testTime = 1) => {
 }
 
 const getResultRank = (grade, Class, subject) => {
-  console.log(grade, Class, subject);
-  if(Class){
-    return querySql(`SELECT ${subject}, StudentID, Class, Name, rank() over (ORDER BY ${subject} DESC) t_rank FROM ${table.resultDetail} where Grade = ${grade} and Class = ${Class} and ${subject} is not null ORDER BY '${subject}' DESC`)
+  console.log(grade, Class, subject)
+  if (Class) {
+    return querySql(
+      `SELECT ${subject}, StudentID, Class, Name, rank() over (ORDER BY ${subject} DESC) t_rank FROM ${table.resultDetail} where Grade = ${grade} and Class = ${Class} and ${subject} is not null ORDER BY '${subject}' DESC`,
+    )
   } else {
-    return querySql(`SELECT ${subject}, StudentID, Class, Name, rank() over (ORDER BY ${subject} DESC) t_rank FROM ${table.resultDetail} where Grade = ${grade} and ${subject} is not null ORDER BY '${subject}' DESC`)
+    return querySql(
+      `SELECT ${subject}, StudentID, Class, Name, rank() over (ORDER BY ${subject} DESC) t_rank FROM ${table.resultDetail} where Grade = ${grade} and ${subject} is not null ORDER BY '${subject}' DESC`,
+    )
   }
+}
+
+const insertStudentResult = data => {
+  let sql = `insert into \`${table.result}\` (StudentID, Chinese, Math, English, Politics, History, Physical, Chemistry, Biology, Geography, Sport, Composite, Total, TestTime) values `
+  const insertData = data.map(item => {
+    if ((item.StudentID + '').length < 4) {
+      item.StudentID < 10 && (item.StudentID = '0' + item.StudentID)
+      item.StudentID = '' + item.Grade + item.Class + item.StudentID
+    }
+    item.TestTime = time
+    sql += `(${item.StudentID}, ${item.Chinese || null}, ${
+      item.Math || null
+    }, ${item.English || null}, ${item.Politics || null}, ${
+      item.History || null
+    }, ${item.Physical || null}, ${item.Chemistry || null}, ${
+      item.Biology || null
+    }, ${item.Geography || null}, ${item.Sport || null}, ${
+      item.Composite || null
+    }, ${item.Total || null}, ${item.TestTime || null}), `
+    return item
+  })
+  return querySql(sql.slice(0, -2))
 }
 
 module.exports = {
@@ -66,5 +92,6 @@ module.exports = {
   getResult,
   getNewTestTime,
   getPerAdvantageByGrade,
-  getResultRank
+  getResultRank,
+  insertStudentResult,
 }

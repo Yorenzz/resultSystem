@@ -54,7 +54,7 @@ const collapse = ref(false)
       <el-menu-item
         index="/result-information/time-result"
       >
-        占位
+        考试次数/类型编辑
       </el-menu-item>
       <el-menu-item
         index="/result-information/upload-result"

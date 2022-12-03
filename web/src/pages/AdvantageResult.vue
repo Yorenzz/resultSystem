@@ -13,6 +13,7 @@ import {
   CLASS_TRANSLATE_REVERSE,
   SUBJECT_TRANSLATE,
   GRADE_SUBJECT,
+  CLASS_MAP,
 } from '../constant/index.js'
 import {
   advantageResult,
@@ -54,11 +55,11 @@ const classFormat = computed(() => {
 })
 
 const chartAxisData = computed(() => {
-  const arr = GRADE_SUBJECT[checkedGrade.value].map(
-    item => {
-      return SUBJECT_TRANSLATE[item]
-    },
-  )
+  const arr = GRADE_SUBJECT[
+    checkedGrade.value
+  ].map(item => {
+    return SUBJECT_TRANSLATE[item]
+  })
   arr.pop()
   return arr
 })
@@ -77,14 +78,14 @@ const chartData = computed(() => {
         },
       )
       const total = perCLassAdv.pop()
-      console.log(total);
+      console.log(total)
       totalAdvData.value.push({
-        name: CLASS_TRANSLATE[index + 1],
+        name: perClass.value[index],
         type: 'bar',
         data: [total],
       })
       return {
-        name: CLASS_TRANSLATE[index + 1],
+        name: perClass.value[index],
         type: 'bar',
         data: perCLassAdv,
       }
@@ -130,9 +131,12 @@ const getPerAdvantage = grade => {
   advantageResultByGrade(grade)
     .then(res => {
       gradeAdv.value = res
-  myChart.setOption(option.value, true)
+      myChart.setOption(option.value, true)
 
-  totalChart.setOption(totalOption.value, true)
+      totalChart.setOption(
+        totalOption.value,
+        true,
+      )
     })
     .catch(err => {
       console.warn(err)
@@ -146,7 +150,7 @@ const option = computed(() => ({
   title: {
     text: '各班平均分柱状图',
   },
-  legend: {data:perClass.value},
+  legend: {},
   tooltip: {},
   xAxis: {
     data: chartAxisData.value,
@@ -161,13 +165,13 @@ const totalOption = computed(() => ({
     left: 0,
     top: 0,
   },
-  legend: {data:perClass.value},
+  legend: {},
   tooltip: {},
   xAxis: {
-    data: ['总分']
+    data: ['总分'],
   },
   yAxis: {},
-  series: totalAdvData.value
+  series: totalAdvData.value,
 }))
 
 handleCheckAllChange()
@@ -212,7 +216,7 @@ watch(
 watch(
   () => option.value,
   val => {
-    myChart.setOption(option.value, true)
+    myChart.setOption(option.value, true, true)
   },
   {
     immediate: false,
@@ -222,7 +226,11 @@ watch(
 watch(
   () => totalOption.value,
   val => {
-    totalChart.setOption(totalOption.value, true)
+    totalChart.setOption(
+      totalOption.value,
+      true,
+      true,
+    )
   },
   {
     immediate: false,
@@ -350,7 +358,6 @@ watch(
         v-loading="loading.chart"
       ></div>
     </div>
-    
   </div>
 </template>
 

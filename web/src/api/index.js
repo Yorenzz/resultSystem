@@ -132,6 +132,29 @@ export const advantageResultByGrade = (
   })
 }
 
+export const addResult = data => {
+  return request({
+    method: 'POST',
+    url: '/result/insertStudentResult',
+    data: { data },
+  })
+}
+
+export const addStudent = data => {
+  return request({
+    method: 'POST',
+    url: '/student/insertStudent',
+    data: { data },
+  })
+}
+
+export const getTestTime = () => {
+  return request({
+    method: 'GET',
+    url: '/student/getTestTime',
+  })
+}
+
 export const getRank=(grade, Class, subject)=>{
   return request({
     method: 'POST',

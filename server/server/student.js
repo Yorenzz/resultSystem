@@ -63,6 +63,23 @@ const isHaveStudent = ID => {
   )
 }
 
+const insertStudent = data => {
+  let sql = `insert into \`${table.student}\` (StudentID, Grade, Class, Name) values `
+  const insertData = data.map(item => {
+    if ((item.StudentID + '').length < 4) {
+      item.StudentID < 10 && (item.StudentID = '0' + item.StudentID)
+      item.StudentID = '' + item.Grade + item.Class + item.StudentID
+    }
+    sql += `(${item.StudentID}, ${item.Grade}, ${item.Class}, \'${item.Name}\'), `
+    return item
+  })
+  return querySql(sql.slice(0, -2))
+}
+
+const getTestTime = () => {
+  return querySql(`select * from ${table.testTime}`)
+}
+
 module.exports = {
   getStudent,
   getClass,
@@ -73,4 +90,6 @@ module.exports = {
   isHaveStudent,
   addInformation,
   deleteInformation,
+  insertStudent,
+  getTestTime,
 }

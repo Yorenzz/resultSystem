@@ -57,10 +57,10 @@ getPerClass()
   .wrapper {
     background: #eef0f3;
     padding: 20px;
-    height: calc(100vh - 50px);
+    min-height: calc(100vh - 50px);
     .main-page {
       background: #fff;
-      height: calc(100vh - 90px);
+      min-height: calc(100vh - 90px);
     }
   }
 }

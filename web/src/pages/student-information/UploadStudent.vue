@@ -6,6 +6,7 @@ import config, {
 } from '../../config/index.js'
 import { UploadFilled } from '@element-plus/icons-vue'
 import {
+  addStudent,
   downloadStudentTemplate,
   uploadFile,
 } from '../../api/index.js'
@@ -33,6 +34,7 @@ const excelData = ref([])
 const uploadRef = ref(null)
 const file = ref([])
 const flag = ref([])
+const loading = ref(false)
 
 const tableData = computed(() => {
   return excelData.value[0]?.results.map(item => {
@@ -46,11 +48,9 @@ const tableData = computed(() => {
 })
 
 const submitDisabled = computed(() => {
-  if (!flag.value.length && file.value.length) {
-    return false
-  } else {
-    return true
-  }
+  return !(
+    !flag.value.length && file.value.length
+  )
 })
 
 const header = computed(() => {
@@ -62,6 +62,15 @@ const header = computed(() => {
 })
 const submitUpload = () => {
   // uploadRef?.value.submit()
+  loading.value = true
+  addStudent(tableData.value)
+    .then(res => {
+      loading.value = false
+    })
+    .catch(e => {
+      loading.value = false
+      console.warn(e)
+    })
 }
 
 const initFileData = () => {
@@ -85,6 +94,7 @@ const fileSubmit = (e, files) => {
     for (const sheetName of workbook.SheetNames) {
       const worksheet = workbook.Sheets[sheetName]
       const header = getHeaderRow(worksheet)
+      console.log(header)
       if (typeof header === 'number') {
         flag.value.push({
           c: LETTER_TO_NUMBER[header],

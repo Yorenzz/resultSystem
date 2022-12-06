@@ -19,7 +19,7 @@ router.post('/login', async function (ctx, next) {
         res,
       },
       'Yorenz',
-      { expiresIn: '24h' },
+      { expiresIn: '20h' },
     )
     ctx.body = utils.success(data, '登录成功')
   } else {
@@ -28,16 +28,15 @@ router.post('/login', async function (ctx, next) {
 })
 
 router.get('/verify', async (ctx, next) => {
-  const  { token } = ctx.request.query
+  const { token } = ctx.request.query
   let res = {
     username: '',
     role: '',
   }
-  jwt.verify(token, 'Yorenz', (err, data)=>{
-    if(err){
+  jwt.verify(token, 'Yorenz', (err, data) => {
+    if (err) {
       console.log('e', err)
-    }
-    else {
+    } else {
       // console.log(data, 'data');
       res.username = data.res[0].username
       res.role = data.res[0].role
@@ -50,12 +49,12 @@ router.post('/register', async function (ctx, next) {
   // console.log(ctx.request.body)
   const { username, password } = ctx.request.body
   const isHave = await isHaveUsername(username)
-  if(isHave[0].isHave){
+  if (isHave[0].isHave) {
     ctx.body = utils.fail('用户名已存在！')
   } else {
     const res = await Register(username, md5(password))
     // console.log(res)
-    ctx.body = utils.success(res, '注册成功！请点击按钮返回登录...')    
+    ctx.body = utils.success(res, '注册成功！请点击按钮返回登录...')
   }
 })
 

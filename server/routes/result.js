@@ -5,6 +5,7 @@ const {
   getAdvantage,
   getPerAdvantageByGrade,
   getResultRank,
+  insertStudentResult,
 } = require('../server/result')
 const { getPerStudentMessage } = require('../server/student')
 

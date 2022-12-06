@@ -21,7 +21,7 @@ function useTable(app) {
 const pinia = createPinia()
 const app = createApp(App)
 app.use(pinia)
-app.use(useTable)
+app.use(VXETable)
 app.use(ElementPlus)
 for (const [key, component] of Object.entries(
   ElementPlusIconsVue,

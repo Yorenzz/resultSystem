@@ -216,7 +216,11 @@ router.beforeEach(async (to, from, next) => {
         hasToken,
       )
       if (username) {
-        store.saveUserInfo(username, role)
+        store.saveUserInfo(
+          username,
+          role,
+          hasToken,
+        )
         if (to.path === '/login') {
           next('/')
         } else {
@@ -238,7 +242,7 @@ router.beforeEach(async (to, from, next) => {
         next()
       } else {
         ElMessage.error('登录失效')
-        next(`/login?redirect=${to.path}`)
+        next(`/login?redirect=${to?.path}`)
       }
     }
     store.isFirst++

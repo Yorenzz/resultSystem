@@ -48,7 +48,7 @@ app.use(async (ctx, next) => {
   await next().catch(err => {
     if (err.status === 401) {
       ctx.status = 200
-      ctx.body = util.fail('登录失效', util.CODE.AUTH_ERROR)
+      ctx.body = util.fail('登录失效', '', util.CODE.AUTH_ERROR)
     } else {
       throw err
     }

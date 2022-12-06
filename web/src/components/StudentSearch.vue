@@ -1,10 +1,10 @@
 <script setup>
 import { searchStudent } from '../api/index.js'
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue'
 
 const props = defineProps({
   student: {
-    type: Number,
+    type: [Number, null],
     default: null,
   },
 })
@@ -20,7 +20,6 @@ const loading = reactive({
   search: false,
 })
 const handleChange = () => {
-  console.log(1)
   if (!search.studentID) {
     emit('update:student', null)
   } else {
@@ -39,6 +38,16 @@ const remoteMethod = keyword => {
     search.searchList = []
   }
 }
+
+watch(
+  () => props.student,
+  val => {
+    if (!val) {
+      ;(search.studentID = null),
+        (search.searchList = [])
+    }
+  },
+)
 </script>
 
 <template>

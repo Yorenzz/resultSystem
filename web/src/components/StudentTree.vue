@@ -1,10 +1,14 @@
 <script setup>
 import { reactive, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import {
   getStudentInformation,
   searchStudent,
 } from '../api'
 import StudentSearch from './StudentSearch.vue'
+
+const route = useRoute()
+const router = useRouter()
 
 const props = defineProps({
   student: {
@@ -30,9 +34,15 @@ const tree = ref([])
 const treeRef = ref(null)
 
 const handleNodeClick = data => {
-  // console.log('data', data);
   if (data?.StudentID) {
     selectStudent.value = data.StudentID
+    const query = { ...route.query }
+    router.push({
+      query: Object.assign(query, {
+        id: data.StudentID,
+      }),
+    })
+    searchStudentID.value = null
     emit('update:student', selectStudent.value)
   }
 }
@@ -51,9 +61,16 @@ const searchChange = val => {
   setNotExpanded()
   selectStudent.value = val
   emit('update:student', selectStudent.value)
+
+  const query = { ...route.query }
+  router.push({
+    query: Object.assign(query, {
+      id: val,
+    }),
+  })
   treeRef.value.setCurrentKey(val)
   setTimeout(() => {
-    document.getElementByID(val).scrollIntoView({
+    document.getElementById(val).scrollIntoView({
       block: 'start',
       behavior: 'smooth',
     })
@@ -79,7 +96,6 @@ getTreeData()
 
 watch(searchStudentID, val => {
   if (val) {
-    console.log(1, typeof val)
     searchChange(val)
   } else {
     emit('update:student', null)

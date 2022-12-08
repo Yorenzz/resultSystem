@@ -94,7 +94,6 @@ const fileSubmit = (e, files) => {
     for (const sheetName of workbook.SheetNames) {
       const worksheet = workbook.Sheets[sheetName]
       const header = getHeaderRow(worksheet)
-      console.log(header)
       if (typeof header === 'number') {
         flag.value.push({
           c: LETTER_TO_NUMBER[header],

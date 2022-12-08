@@ -234,7 +234,6 @@ const addMode = () => {
 
 const handleEditData = (row, column) => {
   const { field, title } = column
-  console.log(row, row[field])
   editData.originalData = row[field]
   editData.originalAll = row
   editData.changeField = field
@@ -264,7 +263,6 @@ const removeStudent = row => {
     .then(() => {
       deleteStudentInformation([row.StudentID])
         .then(res => {
-          console.log(res)
           getInformation()
           deleteData.value = []
         })
@@ -279,7 +277,6 @@ const allRemove = () => {
   deleteConfirm.value = false
   deleteStudentInformation(deleteData.value)
     .then(res => {
-      console.log(res)
       getInformation()
       deleteData.value = []
     })
@@ -322,7 +319,6 @@ const changeStudent = () => {
     editData.changeField,
   )
     .then(res => {
-      console.log(res)
       getInformation()
     })
     .catch(e => {
@@ -343,7 +339,6 @@ const addStudent = () => {
     addData.id,
   )
     .then(res => {
-      console.log(res)
       getInformation()
       addData.grade = null
       addData.name = null

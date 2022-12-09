@@ -11,21 +11,25 @@ export const mainStore = defineStore('main', {
   actions: {},
 })
 
-export const userInfoStore = defineStore('userInfo', {
-  state: () => {
-    return {
-      username: '',
-      role: '',
-      XToken: '' || storage.getItem('XToken'),
-      isFirst: 1,
-    }
-  },
-  getters: {},
-  actions: {
-    saveUserInfo(username, role, token) {
-      this.username = username
-      this.role = role
-      token && (this.XToken = token) && storage.setItem('XToken', this.XToken)
+export const userInfoStore = defineStore(
+  'userInfo',
+  {
+    state: () => {
+      return {
+        username: '',
+        role: '',
+        XToken: '' || storage.getItem('XToken'),
+      }
+    },
+    getters: {},
+    actions: {
+      saveUserInfo(username, role, token) {
+        this.username = username
+        this.role = role
+        token &&
+          (this.XToken = token) &&
+          storage.setItem('XToken', this.XToken)
+      },
     },
   },
-})
+)

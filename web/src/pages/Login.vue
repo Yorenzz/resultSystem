@@ -5,11 +5,12 @@ import {
 } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
 import { Login } from '../api/index.js'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { userInfoStore } from '../store/index.js'
 
 const store = userInfoStore()
 const router = useRouter()
+const route = useRoute()
 const userForm = ref(null)
 const loading = ref(false)
 const userData = reactive({
@@ -51,10 +52,12 @@ const submit = () => {
             role,
             token,
           )
-          router.push('/')
+          router.push({
+            path: route.query.redirect || '/',
+          })
         })
         .catch(err => {
-          // console.log(err)
+          console.warn(err)
         })
         .finally(() => {
           loading.value = false

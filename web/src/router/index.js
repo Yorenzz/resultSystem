@@ -210,12 +210,19 @@ router.beforeEach(async (to, from, next) => {
   document.title = to.meta.title
   const hasToken = getToken()
   const store = userInfoStore()
-  if (store.isFirst === 1) {
+  const hasGetUserInfo = !!store.username
+  // 是否第一次进入网页
+  if (!hasGetUserInfo) {
+    // 第一次进入网页
+    // 是否有token
     if (hasToken) {
+      // 有token
       const { username, role } = await verify(
         hasToken,
       )
+      // 验证token
       if (username) {
+        // 验证成功，存user进pinia，阻止login路由
         store.saveUserInfo(
           username,
           role,
@@ -227,6 +234,7 @@ router.beforeEach(async (to, from, next) => {
           next()
         }
       } else {
+        // 验证失败，跳转login
         if (whiteList.indexOf(to.path) !== -1) {
           next()
         } else {
@@ -238,25 +246,31 @@ router.beforeEach(async (to, from, next) => {
         }
       }
     } else {
+      // 无token
       if (whiteList.indexOf(to.path) !== -1) {
         next()
       } else {
+        // 跳转登录
         ElMessage.error('登录失效')
         next(`/login?redirect=${to?.path}`)
       }
     }
-    store.isFirst++
   } else {
+    // 不是第一次进入网页
     if (hasToken) {
+      // 有token
       if (to.path === '/login') {
+        // 阻止进入login
         next('/')
       } else {
         next()
       }
     } else {
+      // 无token
       if (whiteList.indexOf(to.path) !== -1) {
         next()
       } else {
+        // 跳转登录
         ElMessage.error('验证失败')
         next(`/login?redirect=${to.path}`)
       }

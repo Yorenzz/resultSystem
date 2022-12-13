@@ -9,20 +9,15 @@ import { createPinia } from 'pinia'
 import VXETable from 'vxe-table'
 import 'vxe-table/lib/style.css'
 import './common/echartsUse'
-function useTable(app) {
-  app.use(VXETable)
-
-  // 给 vue 实例挂载内部对象，例如：
-  // app.config.globalProperties.$XModal = VXETable.modal
-  // app.config.globalProperties.$XPrint = VXETable.print
-  // app.config.globalProperties.$XSaveFile = VXETable.saveFile
-  // app.config.globalProperties.$XReadFile = VXETable.readFile
-}
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 const pinia = createPinia()
 const app = createApp(App)
+
 app.use(pinia)
 app.use(VXETable)
-app.use(ElementPlus)
+app.use(ElementPlus, {
+  locale: zhCn,
+})
 for (const [key, component] of Object.entries(
   ElementPlusIconsVue,
 )) {

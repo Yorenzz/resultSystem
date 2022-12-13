@@ -6,24 +6,24 @@ const testType = ref([])
 const today = ref(new Date())
 
 const isTestTime = day => {
-  let testName = null
-  testType.value?.map(item => {
-    if (item?.['TestDate'] === day) {
-      testName = item?.['TestName']
-    }
-  })
-  return testName
+	let testName = null
+	testType.value?.map(item => {
+		if (item?.TestDate === day) {
+			testName = item?.TestName
+		}
+		return item
+	})
+	return testName
 }
 
 const testTimeMes = () => {
-  getTestTime()
-    .then(res => {
-      console.log(res)
-      testType.value = res
-    })
-    .catch(e => {
-      console.warn(e)
-    })
+	getTestTime()
+		.then(res => {
+			testType.value = res
+		})
+		.catch(e => {
+			console.warn(e)
+		})
 }
 testTimeMes()
 </script>

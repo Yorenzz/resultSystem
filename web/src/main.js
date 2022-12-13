@@ -15,13 +15,11 @@ const app = createApp(App)
 
 app.use(pinia)
 app.use(VXETable)
-app.use(ElementPlus, {
-  locale: zhCn,
-})
+app.use(ElementPlus, { locale: zhCn })
 for (const [key, component] of Object.entries(
-  ElementPlusIconsVue,
+	ElementPlusIconsVue,
 )) {
-  app.component(key, component)
+	app.component(key, component)
 }
 
 app.use(router)

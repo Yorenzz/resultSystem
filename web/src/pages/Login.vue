@@ -1,8 +1,6 @@
 <script setup>
-import {
-  User,
-  Lock,
-} from '@element-plus/icons-vue'
+import { User,
+	Lock } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
 import { Login } from '../api/index.js'
 import { useRoute, useRouter } from 'vue-router'
@@ -14,59 +12,53 @@ const route = useRoute()
 const userForm = ref(null)
 const loading = ref(false)
 const userData = reactive({
-  username: 'youlian',
-  password: 'youlian',
+	username: 'youlian',
+	password: 'youlian',
 })
 const usernameRule = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error('请输入用户名'))
-  } else {
-    callback()
-  }
+	if (value === '') {
+		callback(new Error('请输入用户名'))
+	} else {
+		callback()
+	}
 }
 const passwordRules = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error('请输入密码'))
-  } else {
-    callback()
-  }
+	if (value === '') {
+		callback(new Error('请输入密码'))
+	} else {
+		callback()
+	}
 }
 const rules = reactive({
-  username: [
-    { validator: usernameRule, trigger: 'blur' },
-  ],
-  password: [
-    { validator: passwordRules, trigger: 'blur' },
-  ],
+	username: [{ validator: usernameRule, trigger: 'blur' }],
+	password: [{ validator: passwordRules, trigger: 'blur' }],
 })
 const submit = () => {
-  loading.value = true
-  userForm.value
-    .validate()
-    .then(() => {
-      Login(userData.username, userData.password)
-        .then(res => {
-          const { username, role, token } = res
-          store.saveUserInfo(
-            username,
-            role,
-            token,
-          )
-          router.push({
-            path: route.query.redirect || '/',
-          })
-        })
-        .catch(err => {
-          console.warn(err)
-        })
-        .finally(() => {
-          loading.value = false
-        })
-    })
-    .catch(() => {})
+	loading.value = true
+	userForm.value
+		.validate()
+		.then(() => {
+			Login(userData.username, userData.password)
+				.then(res => {
+					const { username, role, token } = res
+					store.saveUserInfo(
+						username,
+						role,
+						token,
+					)
+					router.push({ path: route.query.redirect || '/' })
+				})
+				.catch(err => {
+					console.warn(err)
+				})
+				.finally(() => {
+					loading.value = false
+				})
+		})
+		.catch(() => {})
 }
 const register = () => {
-  router.push('/register')
+	router.push('/register')
 }
 </script>
 
@@ -103,9 +95,9 @@ const register = () => {
           >
             登录
           </el-button>
-          <el-button @click="register"
-            >注册</el-button
-          >
+          <el-button @click="register">
+            注册
+          </el-button>
         </div>
       </el-form-item>
     </el-form>

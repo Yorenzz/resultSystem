@@ -1,32 +1,24 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import * as XLSX from 'xlsx'
-import config, {
-  TOKEN_KEY,
-} from '../../config/index.js'
+import config, { TOKEN_KEY } from '../../config/index.js'
 import { UploadFilled } from '@element-plus/icons-vue'
-import {
-  addStudent,
-  downloadStudentTemplate,
-  uploadFile,
-} from '../../api/index.js'
+import { addStudent,
+	downloadStudentTemplate,
+	uploadFile } from '../../api/index.js'
 import storage from '../../utils/storage.js'
-import {
-  ElMessage,
-  genFileId,
-} from 'element-plus'
-import {
-  STUDENT_KEY_TRANSLATE,
-  LETTER_TO_NUMBER,
-} from '../../constant'
+import { ElMessage,
+	genFileId } from 'element-plus'
+import { STUDENT_KEY_TRANSLATE,
+	LETTER_TO_NUMBER } from '../../constant'
 
 const column = computed(() => {
-  return excelData.value[0]?.header.map(item => {
-    return {
-      field: STUDENT_KEY_TRANSLATE[item],
-      title: item,
-    }
-  })
+	return excelData.value[0]?.header.map(item => {
+		return {
+			field: STUDENT_KEY_TRANSLATE[item],
+			title: item,
+		}
+	})
 })
 
 const submitDisable = ref(true)
@@ -37,148 +29,144 @@ const flag = ref([])
 const loading = ref(false)
 
 const tableData = computed(() => {
-  return excelData.value[0]?.results.map(item => {
-    return {
-      StudentID: item['座号'],
-      Name: item['姓名'],
-      Class: item['班级'],
-      Grade: item['年级'],
-    }
-  })
+	return excelData.value[0]?.results.map(item => {
+		return {
+			StudentID: item['座号'],
+			Name: item['姓名'],
+			Class: item['班级'],
+			Grade: item['年级'],
+		}
+	})
 })
 
 const submitDisabled = computed(() => {
-  return !(
-    !flag.value.length && file.value.length
-  )
+	return !(
+		!flag.value.length && file.value.length
+	)
 })
 
 const header = computed(() => {
-  return {
-    Authorization: `Bearer ${storage.getItem(
-      TOKEN_KEY,
-    )}`,
-  }
+	return {
+		Authorization: `Bearer ${storage.getItem(
+			TOKEN_KEY,
+		)}`,
+	}
 })
 const submitUpload = () => {
-  // uploadRef?.value.submit()
-  loading.value = true
-  addStudent(tableData.value)
-    .then(res => {
-      loading.value = false
-    })
-    .catch(e => {
-      loading.value = false
-      console.warn(e)
-    })
+	// uploadRef?.value.submit()
+	loading.value = true
+	addStudent(tableData.value)
+		.then(res => {
+			loading.value = false
+		})
+		.catch(e => {
+			loading.value = false
+			console.warn(e)
+		})
 }
 
 const initFileData = () => {
-  flag.value = []
-  excelData.value = []
-  submitDisable.value = true
+	flag.value = []
+	excelData.value = []
+	submitDisable.value = true
 }
 
 const fileSubmit = (e, files) => {
-  let fileContent = ''
-  const rawFile = e && e.raw // only setting files[0]
-  if (!rawFile) return
+	let fileContent = ''
+	const rawFile = e && e.raw // only setting files[0]
+	if (!rawFile) return
 
-  const reader = new FileReader()
-  reader.onload = ev => {
-    fileContent = ev.target.result
-    const workbook = XLSX.read(fileContent, {
-      type: 'array',
-      cellDates: true,
-    })
-    for (const sheetName of workbook.SheetNames) {
-      const worksheet = workbook.Sheets[sheetName]
-      const header = getHeaderRow(worksheet)
-      if (typeof header === 'number') {
-        flag.value.push({
-          c: LETTER_TO_NUMBER[header],
-          r: 2,
-        })
-        return
-      }
-      let results = XLSX.utils.sheet_to_json(
-        worksheet,
-        {
-          raw: true,
-          defval: null,
-        },
-      )
-      excelData.value.push({
-        header,
-        results,
-        meta: {
-          sheetName,
-        },
-      })
-    }
-    // console.log(workbook);
-  }
-  reader.readAsArrayBuffer(rawFile)
+	const reader = new FileReader()
+	reader.onload = ev => {
+		fileContent = ev.target.result
+		const workbook = XLSX.read(fileContent, {
+			type: 'array',
+			cellDates: true,
+		})
+		for (const sheetName of workbook.SheetNames) {
+			const worksheet = workbook.Sheets[sheetName]
+			const header = getHeaderRow(worksheet)
+			if (typeof header === 'number') {
+				flag.value.push({
+					c: LETTER_TO_NUMBER[header],
+					r: 2,
+				})
+				return
+			}
+			const results = XLSX.utils.sheet_to_json(
+				worksheet,
+				{
+					raw: true,
+					defval: null,
+				},
+			)
+			excelData.value.push({
+				header,
+				results,
+				meta: { sheetName },
+			})
+		}
+		// console.log(workbook);
+	}
+	reader.readAsArrayBuffer(rawFile)
 }
 
-function getHeaderRow(sheet) {
-  if (!sheet || !sheet['!ref']) return []
-  const headers = []
-  // A3:B7=>{s:{c:0, r:2}, e:{c:1, r:6}}
-  const range = XLSX.utils.decode_range(
-    sheet['!ref'],
-  )
-  const R = range.s.r
-  /* start in the first row */
-  for (let C = range.s.c; C <= range.e.c; ++C) {
-    /* walk every column in the range */
-    const cell =
-      sheet[
-        XLSX.utils.encode_cell({ c: C, r: R })
+function getHeaderRow (sheet) {
+	if (!sheet || !sheet['!ref']) return []
+	const headers = []
+	// A3:B7=>{s:{c:0, r:2}, e:{c:1, r:6}}
+	const range = XLSX.utils.decode_range(
+		sheet['!ref'],
+	)
+	const R = range.s.r
+	/* start in the first row */
+	for (let C = range.s.c; C <= range.e.c; ++C) {
+		/* walk every column in the range */
+		const cell
+      = sheet[
+      	XLSX.utils.encode_cell({ c: C, r: R })
       ]
-    /* find the cell in the first row */
-    let hdr = 'UNKNOWN ' + C // <-- replace with your desired default
-    if (cell && cell.t)
-      hdr = XLSX.utils.format_cell(cell)
-    else {
-      return C
-    }
-    headers.push(hdr)
-  }
+		/* find the cell in the first row */
+		let hdr = 'UNKNOWN ' + C // <-- replace with your desired default
+		if (cell && cell.t) { hdr = XLSX.utils.format_cell(cell) } else {
+			return C
+		}
+		headers.push(hdr)
+	}
 
-  for (let W = range.s.c; W <= range.e.c; ++W) {
-    for (let H = range.s.r; H <= range.e.r; ++H) {
-      const cell =
-        sheet[
-          XLSX.utils.encode_cell({ c: W, r: H })
+	for (let W = range.s.c; W <= range.e.c; ++W) {
+		for (let H = range.s.r; H <= range.e.r; ++H) {
+			const cell
+        = sheet[
+        	XLSX.utils.encode_cell({ c: W, r: H })
         ]
-      if (!cell) {
-        flag.value.push({
-          c: LETTER_TO_NUMBER[W + 1],
-          r: H + 1,
-        })
-      }
-    }
-  }
-  return headers
+			if (!cell) {
+				flag.value.push({
+					c: LETTER_TO_NUMBER[W + 1],
+					r: H + 1,
+				})
+			}
+		}
+	}
+	return headers
 }
 
 const handleExceed = files => {
-  uploadRef.value.clearFiles()
-  initFileData()
-  const fileExceed = files[0]
-  fileExceed.uid = genFileId()
-  uploadRef.value.handleStart(fileExceed)
+	uploadRef.value.clearFiles()
+	initFileData()
+	const fileExceed = files[0]
+	fileExceed.uid = genFileId()
+	uploadRef.value.handleStart(fileExceed)
 }
 
 const downloadTemplate = () => {
-  downloadStudentTemplate()
-    .then(res => {
-      window.open(res)
-    })
-    .catch(err => {
-      console.warn(err)
-    })
+	downloadStudentTemplate()
+		.then(res => {
+			window.open(res)
+		})
+		.catch(err => {
+			console.warn(err)
+		})
 }
 </script>
 
@@ -229,7 +217,8 @@ const downloadTemplate = () => {
           </span>
           <div
             v-else
-            v-for="item in flag"
+            v-for="(item, index) in flag"
+            :key="index"
             class="tip-content"
           >
             excel中{{ item.c }}列{{

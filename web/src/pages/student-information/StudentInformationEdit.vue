@@ -1,9 +1,9 @@
-<script setup >
-</script >
+<script setup>
+</script>
 
-<template >
-    edit
-</template >
+<template>
+  edit
+</template>
 
-<style scoped >
-</style >
+<style scoped>
+</style>

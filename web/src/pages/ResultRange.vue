@@ -1,9 +1,9 @@
-<script setup >
-</script >
+<script setup>
+</script>
 
-<template >
-    range
-</template >
+<template>
+  range
+</template>
 
-<style scoped >
-</style >
+<style scoped>
+</style>

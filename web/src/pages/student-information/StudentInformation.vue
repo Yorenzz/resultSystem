@@ -1,16 +1,12 @@
 <script setup>
 import { ElMessageBox } from 'element-plus'
 import { computed, reactive, ref } from 'vue'
-import {
-  getStudentInformation,
-  changeStudentInformation,
-  addStudentInformation,
-  deleteStudentInformation,
-} from '../../api'
-import {
-  CLASS_TRANSLATE,
-  GRADE_TRANSLATE,
-} from '../../constant'
+import { getStudentInformation,
+	changeStudentInformation,
+	addStudentInformation,
+	deleteStudentInformation } from '../../api'
+import { CLASS_TRANSLATE,
+	GRADE_TRANSLATE } from '../../constant'
 import { InfoFilled } from '@element-plus/icons-vue'
 
 const tableData = ref([])
@@ -18,26 +14,26 @@ const ruleFormRef = ref(null)
 const addFormRef = ref(null)
 const tableRef = ref(null)
 const loading = reactive({
-  table: false,
-  button: false,
+	table: false,
+	button: false,
 })
 const dataVerify = computed(() => {
-  return tableData.value.map(item => {
-    return item.StudentID
-  })
+	return tableData.value.map(item => {
+		return item.StudentID
+	})
 })
 let editData = reactive({
-  originalData: null,
-  nowData: null,
-  changeField: null,
-  changeTitle: '',
-  originalAll: {},
+	originalData: null,
+	nowData: null,
+	changeField: null,
+	changeTitle: '',
+	originalAll: {},
 })
 const addData = reactive({
-  name: '',
-  grade: null,
-  Class: null,
-  id: null,
+	name: '',
+	grade: null,
+	Class: null,
+	id: null,
 })
 const deleteData = ref([])
 const deleteConfirm = ref(false)
@@ -45,328 +41,296 @@ const isEdit = ref(false)
 const isAdd = ref(false)
 
 const toolbar = computed(() => {
-  return isAdd.value
-    ? {
-        custom: false,
-        slots: {
-          buttons: 'toolbar_buttons',
-        },
-      }
-    : {}
+	return isAdd.value
+		? {
+			custom: false,
+			slots: { buttons: 'toolbar_buttons' },
+		}
+		: {}
 })
 const checkboxChangeEvent = data => {
-  deleteData.value = data.records.map(item => {
-    return item.StudentID
-  })
+	deleteData.value = data.records.map(item => {
+		return item.StudentID
+	})
 }
 const column = computed(() => {
-  if (isAdd.value) {
-    return [
-      { type: 'seq', width: 60 },
-      { type: 'checkbox', width: 50 },
-      {
-        field: 'StudentID',
-        title: '编号',
-        slots: {
-          default: 'id',
-        },
-      },
-      {
-        field: 'Name',
-        title: '姓名',
-        slots: {
-          default: 'name',
-        },
-      },
-      {
-        field: 'Grade',
-        title: '年级',
-        slots: {
-          default: 'grade',
-        },
-      },
-      {
-        field: 'Class',
-        title: '班级',
-        slots: {
-          default: 'class',
-        },
-      },
-      {
-        title: '操作',
-        slots: { default: 'operate' },
-      },
-    ]
-  } else {
-    return [
-      {
-        field: 'StudentID',
-        title: '编号',
-        slots: {
-          default: 'id',
-        },
-      },
-      {
-        field: 'Name',
-        title: '姓名',
-        slots: {
-          default: 'name',
-        },
-      },
-      {
-        field: 'Grade',
-        title: '年级',
-        slots: {
-          default: 'grade',
-        },
-      },
-      {
-        field: 'Class',
-        title: '班级',
-        slots: {
-          default: 'class',
-        },
-      },
-    ]
-  }
+	if (isAdd.value) {
+		return [
+			{ type: 'seq', width: 60 },
+			{ type: 'checkbox', width: 50 },
+			{
+				field: 'StudentID',
+				title: '编号',
+				slots: { default: 'id' },
+			},
+			{
+				field: 'Name',
+				title: '姓名',
+				slots: { default: 'name' },
+			},
+			{
+				field: 'Grade',
+				title: '年级',
+				slots: { default: 'grade' },
+			},
+			{
+				field: 'Class',
+				title: '班级',
+				slots: { default: 'class' },
+			},
+			{
+				title: '操作',
+				slots: { default: 'operate' },
+			},
+		]
+	} else {
+		return [{
+			field: 'StudentID',
+			title: '编号',
+			slots: { default: 'id' },
+		},
+		{
+			field: 'Name',
+			title: '姓名',
+			slots: { default: 'name' },
+		},
+		{
+			field: 'Grade',
+			title: '年级',
+			slots: { default: 'grade' },
+		},
+		{
+			field: 'Class',
+			title: '班级',
+			slots: { default: 'class' },
+		}]
+	}
 })
 
 const dataPass = (rule, value, callback) => {
-  const reg = /^[\u4E00-\u9FA5]+$/
-  const IDreg = /^[1-3][1-9](0[1-9]|[1-9][0-9])$/
-  if (!value || value === editData.originalData) {
-    callback(new Error('请输入修改数据'))
-  } else if (
-    editData.changeField === 'Name' &&
-    !reg.test(value)
-  ) {
-    callback(new Error('请输入中文姓名！'))
-  } else if (
-    editData.changeField !== 'Name' &&
-    isNaN(value - 0)
-  ) {
-    callback(new Error('请输入整数数字！'))
-  } else if (
-    editData.changeField === 'StudentID' &&
-    !IDreg.test(value)
-  ) {
-    callback('请检查编号格式！')
-  } else if (
-    editData.changeField === 'Grade' &&
-    (value < 1 || value > 3)
-  ) {
-    callback('请检查年级格式！')
-  } else if (
-    editData.changeField === 'Class' &&
-    (value < 1 || value > 9)
-  ) {
-    callback('请检查班级格式！')
-  } else {
-    callback()
-  }
+	const reg = /^[\u4E00-\u9FA5]+$/
+	const IDreg = /^[1-3][1-9](0[1-9]|[1-9][0-9])$/
+	if (!value || value === editData.originalData) {
+		callback(new Error('请输入修改数据'))
+	} else if (
+		editData.changeField === 'Name'
+    && !reg.test(value)
+	) {
+		callback(new Error('请输入中文姓名！'))
+	} else if (
+		editData.changeField !== 'Name'
+    && isNaN(value - 0)
+	) {
+		callback(new Error('请输入整数数字！'))
+	} else if (
+		editData.changeField === 'StudentID'
+    && !IDreg.test(value)
+	) {
+		callback('请检查编号格式！')
+	} else if (
+		editData.changeField === 'Grade'
+    && (value < 1 || value > 3)
+	) {
+		callback('请检查年级格式！')
+	} else if (
+		editData.changeField === 'Class'
+    && (value < 1 || value > 9)
+	) {
+		callback('请检查班级格式！')
+	} else {
+		callback()
+	}
 }
 
 const namePass = (rule, value, callback) => {
-  const reg = /^[\u4E00-\u9FA5]+$/
-  if (!reg.test(value)) {
-    callback(new Error('请输入中文姓名！'))
-  } else {
-    callback()
-  }
+	const reg = /^[\u4E00-\u9FA5]+$/
+	if (!reg.test(value)) {
+		callback(new Error('请输入中文姓名！'))
+	} else {
+		callback()
+	}
 }
 
 const gradePass = (rule, value, callback) => {
-  if (value > 3 || value < 1) {
-    callback(new Error('请输入数字1-3！'))
-  } else {
-    callback()
-  }
+	if (value > 3 || value < 1) {
+		callback(new Error('请输入数字1-3！'))
+	} else {
+		callback()
+	}
 }
 const classPass = (rule, value, callback) => {
-  if (value > 9 || value < 1) {
-    callback(new Error('请输入数字1-9！'))
-  } else {
-    callback()
-  }
+	if (value > 9 || value < 1) {
+		callback(new Error('请输入数字1-9！'))
+	} else {
+		callback()
+	}
 }
 const idPass = (rule, value, callback) => {
-  if (value > 99 || value < 1) {
-    callback(new Error('请输入数字1-99！'))
-  } else {
-    callback()
-  }
+	if (value > 99 || value < 1) {
+		callback(new Error('请输入数字1-99！'))
+	} else {
+		callback()
+	}
 }
-const rules = reactive({
-  nowData: [
-    { validator: dataPass, trigger: 'blur' },
-  ],
-})
+const rules = reactive({ nowData: [{ validator: dataPass, trigger: 'blur' }] })
 
 const addRule = reactive({
-  name: [
-    { validator: namePass, trigger: 'blur' },
-  ],
-  grade: [
-    { validator: gradePass, trigger: 'blur' },
-  ],
-  Class: [
-    { validator: classPass, trigger: 'blur' },
-  ],
-  id: [{ validator: idPass, trigger: 'blur' }],
+	name: [{ validator: namePass, trigger: 'blur' }],
+	grade: [{ validator: gradePass, trigger: 'blur' }],
+	Class: [{ validator: classPass, trigger: 'blur' }],
+	id: [{ validator: idPass, trigger: 'blur' }],
 })
 
 const editMode = () => {
-  if (isEdit) {
-    editData = Object.assign(editData, {
-      originalData: null,
-      nowData: null,
-      changeField: null,
-      changeTitle: '',
-      originalAll: {},
-    })
-  }
-  isEdit.value = !isEdit.value
+	if (isEdit.value) {
+		editData = Object.assign(editData, {
+			originalData: null,
+			nowData: null,
+			changeField: null,
+			changeTitle: '',
+			originalAll: {},
+		})
+	}
+	isEdit.value = !isEdit.value
 }
 
 const addMode = () => {
-  isAdd.value = !isAdd.value
+	isAdd.value = !isAdd.value
 }
 
 const handleEditData = (row, column) => {
-  const { field, title } = column
-  editData.originalData = row[field]
-  editData.originalAll = row
-  editData.changeField = field
-  editData.changeTitle = title
-  editData.nowData = null
+	const { field, title } = column
+	editData.originalData = row[field]
+	editData.originalAll = row
+	editData.changeField = field
+	editData.changeTitle = title
+	editData.nowData = null
 }
 
 const initData = () => {
-  editData.changeField = null
-  editData.changeTitle = null
-  editData.nowData = null
-  editData.originalData = null
-  editData.originalAll = {}
+	editData.changeField = null
+	editData.changeTitle = null
+	editData.nowData = null
+	editData.originalData = null
+	editData.originalAll = {}
 }
 
 const removeStudent = row => {
-  ElMessageBox.confirm(
-    '确定删除?此操作无法撤销',
-    '提示',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-      closeOnClickModal: false,
-    },
-  )
-    .then(() => {
-      deleteStudentInformation([row.StudentID])
-        .then(res => {
-          getInformation()
-          deleteData.value = []
-        })
-        .catch(err => {
-          console.warn(err)
-        })
-    })
-    .catch(() => {})
+	ElMessageBox.confirm(
+		'确定删除?此操作无法撤销',
+		'提示',
+		{
+			confirmButtonText: '确定',
+			cancelButtonText: '取消',
+			type: 'warning',
+			closeOnClickModal: false,
+		},
+	)
+		.then(() => {
+			deleteStudentInformation([row.StudentID])
+				.then(res => {
+					getInformation()
+					deleteData.value = []
+				})
+				.catch(err => {
+					console.warn(err)
+				})
+		})
+		.catch(() => {})
 }
 
 const allRemove = () => {
-  deleteConfirm.value = false
-  deleteStudentInformation(deleteData.value)
-    .then(res => {
-      getInformation()
-      deleteData.value = []
-    })
-    .catch(err => {
-      console.warn(err)
-    })
+	deleteConfirm.value = false
+	deleteStudentInformation(deleteData.value)
+		.then(res => {
+			getInformation()
+			deleteData.value = []
+		})
+		.catch(err => {
+			console.warn(err)
+		})
 }
 
 const editSubmit = () => {
-  ruleFormRef.value.validate().then(() => {
-    if (
-      editData.changeField === 'StudentID' &&
-      (editData.originalData + '').slice(0, 2) !==
-        (editData.nowData + '').slice(0, 2)
-    ) {
-      ElMessageBox.alert(
-        '修改类型为编号时不支持修改年级或班级',
-        '注意：',
-        {
-          confirmButtonText: '返回',
-        },
-      )
-    } else {
-      changeStudent()
-    }
-  })
+	ruleFormRef.value.validate().then(() => {
+		if (
+			editData.changeField === 'StudentID'
+      && (editData.originalData + '').slice(0, 2)
+        !== (editData.nowData + '').slice(0, 2)
+		) {
+			ElMessageBox.alert(
+				'修改类型为编号时不支持修改年级或班级',
+				'注意：',
+				{ confirmButtonText: '返回' },
+			)
+		} else {
+			changeStudent()
+		}
+	})
 }
 
 const addSubmit = () => {
-  addFormRef.value.validate().then(() => {
-    addStudent()
-  })
+	addFormRef.value.validate().then(() => {
+		addStudent()
+	})
 }
 
 const changeStudent = () => {
-  loading.button = true
-  changeStudentInformation(
-    editData.originalAll.StudentID,
-    editData.nowData,
-    editData.changeField,
-  )
-    .then(res => {
-      getInformation()
-    })
-    .catch(e => {
-      console.warn(e)
-    })
-    .finally(() => {
-      loading.button = false
-      initData()
-    })
+	loading.button = true
+	changeStudentInformation(
+		editData.originalAll.StudentID,
+		editData.nowData,
+		editData.changeField,
+	)
+		.then(res => {
+			getInformation()
+		})
+		.catch(e => {
+			console.warn(e)
+		})
+		.finally(() => {
+			loading.button = false
+			initData()
+		})
 }
 
 const addStudent = () => {
-  loading.button = true
-  addStudentInformation(
-    addData.name,
-    addData.grade,
-    addData.Class,
-    addData.id,
-  )
-    .then(res => {
-      getInformation()
-      addData.grade = null
-      addData.name = null
-      addData.Class = null
-      addData.id = null
-    })
-    .catch(e => {
-      console.warn(e)
-    })
-    .finally(() => {
-      loading.button = false
-      initData()
-    })
+	loading.button = true
+	addStudentInformation(
+		addData.name,
+		addData.grade,
+		addData.Class,
+		addData.id,
+	)
+		.then(res => {
+			getInformation()
+			addData.grade = null
+			addData.name = null
+			addData.Class = null
+			addData.id = null
+		})
+		.catch(e => {
+			console.warn(e)
+		})
+		.finally(() => {
+			loading.button = false
+			initData()
+		})
 }
 
 const getInformation = () => {
-  loading.table = true
-  getStudentInformation()
-    .then(res => {
-      const { studentList } = res
-      tableData.value = studentList
-    })
-    .catch(e => {
-      console.warn(e)
-    })
-    .finally(() => {
-      loading.table = false
-    })
+	loading.table = true
+	getStudentInformation()
+		.then(res => {
+			const { studentList } = res
+			tableData.value = studentList
+		})
+		.catch(e => {
+			console.warn(e)
+		})
+		.finally(() => {
+			loading.table = false
+		})
 }
 getInformation()
 </script>
@@ -382,12 +346,15 @@ getInformation()
         :columns="column"
         show-overflow
         height="auto"
-        :toolbarConfig="toolbar"
+        :toolbar-config="toolbar"
         :loading="loading.table"
         @checkbox-change="checkboxChangeEvent"
         @checkbox-all="checkboxChangeEvent"
       >
-        <template #toolbar_buttons v-if="isAdd">
+        <template
+          #toolbar_buttons
+          v-if="isAdd"
+        >
           <el-popover
             v-model:visible="deleteConfirm"
             trigger="click"
@@ -427,59 +394,72 @@ getInformation()
           </el-popover>
         </template>
         <template #id="{ row, column }">
-          <span v-if="!isEdit">{{
-            row.StudentID
-          }}</span>
+          <span v-if="!isEdit">
+            {{
+              row.StudentID
+            }}
+          </span>
           <el-button
             link
             type="primary"
             v-else
             @click="handleEditData(row, column)"
-            >{{ row.StudentID }}</el-button
           >
+            {{ row.StudentID }}
+          </el-button>
         </template>
         <template #name="{ row, column }">
-          <span v-if="!isEdit">{{
-            row.Name
-          }}</span>
+          <span v-if="!isEdit">
+            {{
+              row.Name
+            }}
+          </span>
           <el-button
             link
             type="primary"
             v-else
             @click="handleEditData(row, column)"
-            >{{ row.Name }}</el-button
           >
+            {{ row.Name }}
+          </el-button>
         </template>
         <template #grade="{ row, column }">
-          <span v-if="!isEdit">{{
-            row.Grade
-          }}</span>
+          <span v-if="!isEdit">
+            {{
+              row.Grade
+            }}
+          </span>
           <el-button
             link
             type="primary"
             v-else
             @click="handleEditData(row, column)"
-            >{{ row.Grade }}</el-button
           >
+            {{ row.Grade }}
+          </el-button>
         </template>
         <template #class="{ row, column }">
-          <span v-if="!isEdit">{{
-            row.Class
-          }}</span>
+          <span v-if="!isEdit">
+            {{
+              row.Class
+            }}
+          </span>
           <el-button
             link
             type="primary"
             v-else
             @click="handleEditData(row, column)"
-            >{{ row.Class }}</el-button
           >
+            {{ row.Class }}
+          </el-button>
         </template>
         <template #operate="{ row }">
           <vxe-button
             title="删除"
             @click="removeStudent(row)"
-            >删除</vxe-button
           >
+            删除
+          </vxe-button>
         </template>
       </vxe-grid>
     </div>
@@ -490,9 +470,9 @@ getInformation()
           @click="editMode"
           :disabled="isAdd"
         >
-          <span v-if="!isEdit"
-            >点击进入编辑模式</span
-          >
+          <span v-if="!isEdit">
+            点击进入编辑模式
+          </span>
           <span v-else>点击退出编辑模式</span>
         </el-button>
         <el-button
@@ -500,20 +480,24 @@ getInformation()
           @click="addMode"
           :disabled="isEdit"
         >
-          <span v-if="!isAdd"
-            >点击进入增加/删除模式</span
-          >
-          <span v-else
-            >点击退出增加/删除模式</span
-          >
+          <span v-if="!isAdd">
+            点击进入增加/删除模式
+          </span>
+          <span v-else>
+            点击退出增加/删除模式
+          </span>
         </el-button>
       </div>
-      <div class="edit" v-if="isEdit">
+      <div
+        class="edit"
+        v-if="isEdit"
+      >
         <div
           class="data-title"
           v-if="!editData.originalData"
-          >请在左侧点击想要编辑的数据</div
         >
+          请在左侧点击想要编辑的数据
+        </div>
         <div
           class="edit-type"
           v-if="editData.originalData"
@@ -528,7 +512,7 @@ getInformation()
                 class="icon-edit-id"
                 v-if="
                   editData.changeField ===
-                  'StudentID'
+                    'StudentID'
                 "
               >
                 <el-popover
@@ -566,13 +550,15 @@ getInformation()
           v-if="editData.originalData"
         >
           <div class="original-data">
-            <div class="data-title">原数据</div>
+            <div class="data-title">
+              原数据
+            </div>
             <div>{{ editData.originalData }}</div>
           </div>
           <div class="now-data">
-            <div class="data-title"
-              >修改后数据</div
-            >
+            <div class="data-title">
+              修改后数据
+            </div>
             <el-form
               class="now-data-form"
               ref="ruleFormRef"
@@ -601,44 +587,61 @@ getInformation()
             @click="editSubmit"
             size="large"
             color="#80e1d9"
-            ><span class="white-text"
-              >确认修改</span
-            ></el-button
           >
+            <span class="white-text">
+              确认修改
+            </span>
+          </el-button>
         </div>
       </div>
-      <div class="add" v-if="isAdd">
+      <div
+        class="add"
+        v-if="isAdd"
+      >
         <el-form
           :model="addData"
           :rules="addRule"
           ref="addFormRef"
         >
-          <el-form-item label="姓名" prop="name">
+          <el-form-item
+            label="姓名"
+            prop="name"
+          >
             <el-input
               v-model="addData.name"
-            ></el-input>
+            />
           </el-form-item>
-          <el-form-item label="年级" prop="grade">
+          <el-form-item
+            label="年级"
+            prop="grade"
+          >
             <el-input
               v-model="addData.grade"
-            ></el-input>
+            />
           </el-form-item>
-          <el-form-item label="班级" prop="Class">
+          <el-form-item
+            label="班级"
+            prop="Class"
+          >
             <el-input
               v-model="addData.Class"
-            ></el-input>
+            />
           </el-form-item>
-          <el-form-item label="座号" prop="id">
+          <el-form-item
+            label="座号"
+            prop="id"
+          >
             <el-input
               v-model="addData.id"
-            ></el-input>
+            />
           </el-form-item>
         </el-form>
         <el-button
           type="primary"
           @click="addSubmit"
-          >提交</el-button
         >
+          提交
+        </el-button>
       </div>
     </div>
   </div>

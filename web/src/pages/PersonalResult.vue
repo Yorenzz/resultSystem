@@ -1,66 +1,52 @@
 <script setup>
-import {
-  reactive,
-  ref,
-  watch,
-  watchEffect,
-} from 'vue'
+import { reactive,
+	ref,
+	watch,
+	watchEffect } from 'vue'
 import { isEmpty } from 'lodash'
 import { useRoute, useRouter } from 'vue-router'
 import { studentResult } from '../api'
 import StudentTree from '../components/StudentTree.vue'
 import SubjectScore from '../components/SubjectScore.vue'
-import {
-  CLASS_TRANSLATE,
-  GRADE_TRANSLATE,
-} from '../constant/index.js'
+import { CLASS_TRANSLATE,
+	GRADE_TRANSLATE } from '../constant/index.js'
 
 const route = useRoute()
 const router = useRouter()
-const loading = reactive({
-  result: false,
-})
-
-let scoreList = reactive({})
-let perInformation = reactive({
-  Class: null,
-  Grade: null,
-  Name: '',
-  StudentID: null,
-})
+const loading = reactive({ result: false })
 
 const studentMessage = reactive({
-  scoreList: {},
-  information: {},
+	scoreList: {},
+	information: {},
 })
 
 const selectID = ref(null)
 
 const getResult = id => {
-  loading.result = true
-  studentResult(id)
-    .then(res => {
-      const { result = [], information = [] } =
-        res
-      studentMessage.scoreList = result?.[0] || {}
-      studentMessage.information =
-        information?.[0] || {}
-    })
-    .catch(e => {
-      console.warn(e)
-    })
-    .finally(() => {
-      loading.result = false
-    })
+	loading.result = true
+	studentResult(id)
+		.then(res => {
+			const { result = [], information = [] }
+        = res
+			studentMessage.scoreList = result?.[0] || {}
+			studentMessage.information
+        = information?.[0] || {}
+		})
+		.catch(e => {
+			console.warn(e)
+		})
+		.finally(() => {
+			loading.result = false
+		})
 }
 
 watch(
-  () => route.query.id,
-  val => {
-    selectID.value = val
-    getResult(val)
-  },
-  { immediate: true, deep: true },
+	() => route.query.id,
+	val => {
+		selectID.value = val
+		getResult(val)
+	},
+	{ immediate: true, deep: true },
 )
 </script>
 
@@ -84,7 +70,10 @@ watch(
           ]
         }}
       </div>
-      <div v-if="selectID" class="result">
+      <div
+        v-if="selectID"
+        class="result"
+      >
         <template
           v-if="
             !isEmpty(studentMessage.scoreList)
@@ -94,6 +83,7 @@ watch(
             v-for="(
               value, key
             ) in studentMessage.scoreList"
+            :key="key"
           >
             <SubjectScore
               :score="value"
@@ -102,9 +92,14 @@ watch(
             />
           </template>
         </template>
-        <template v-else> 暂无成绩 </template>
+        <template v-else>
+          暂无成绩
+        </template>
       </div>
-      <div v-else class="result">
+      <div
+        v-else
+        class="result"
+      >
         请点击左侧选择学生查看学生成绩
       </div>
     </div>

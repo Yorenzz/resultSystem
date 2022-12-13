@@ -1,40 +1,47 @@
 <script setup></script>
 
 <template>
-    <div class="wscn-http404-container">
-        <div class="wscn-http404">
-            <div class="pic-404">
-                <img
-                    class="pic-404__parent"
-                    src="/public/404_images/404.png"
-                    alt="404"
-                />
-                <img
-                    class="pic-404__child left"
-                    src="/public/404_images/404_cloud.png"
-                    alt="404"
-                />
-                <img
-                    class="pic-404__child mid"
-                    src="/public/404_images/404_cloud.png"
-                    alt="404"
-                />
-                <img
-                    class="pic-404__child right"
-                    src="/public/404_images/404_cloud.png"
-                    alt="404"
-                />
-            </div>
-            <div class="bullshit">
-                <div class="bullshit__oops">OOPS!</div>
-                <div class="bullshit__info"></div>
-                <div class="bullshit__info">
-                    请检查访问路径，或者点击下方按钮返回首页
-                </div>
-                <a href="" class="bullshit__return-home">Back</a>
-            </div>
+  <div class="wscn-http404-container">
+    <div class="wscn-http404">
+      <div class="pic-404">
+        <img
+          class="pic-404__parent"
+          src="/public/404_images/404.png"
+          alt="404"
+        >
+        <img
+          class="pic-404__child left"
+          src="/public/404_images/404_cloud.png"
+          alt="404"
+        >
+        <img
+          class="pic-404__child mid"
+          src="/public/404_images/404_cloud.png"
+          alt="404"
+        >
+        <img
+          class="pic-404__child right"
+          src="/public/404_images/404_cloud.png"
+          alt="404"
+        >
+      </div>
+      <div class="bullshit">
+        <div class="bullshit__oops">
+          OOPS!
         </div>
+        <div class="bullshit__info" />
+        <div class="bullshit__info">
+          请检查访问路径，或者点击下方按钮返回首页
+        </div>
+        <a
+          href=""
+          class="bullshit__return-home"
+        >
+          Back
+        </a>
+      </div>
     </div>
+  </div>
 </template>
 
 <style scoped lang="scss">

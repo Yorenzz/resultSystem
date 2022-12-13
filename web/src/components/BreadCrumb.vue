@@ -1,7 +1,7 @@
 <script setup>
-import { computed, ref, watchEffect } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import storage from '../utils/storage';
+import { computed, ref, watchEffect } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import storage from '../utils/storage'
 
 const router = useRouter()
 const route = useRoute()
@@ -11,7 +11,10 @@ const getBreadcrumb = () => {
 	let matched = route.matched.filter(item => item.meta && item.meta.title)
 	const first = matched[0]
 	if (!isHomePage(first)) {
-		matched = [{ path: '/', meta: { title: '首页' }}].concat(matched)
+		matched = [{
+			path: '/',
+			meta: { title: '首页' },
+		}].concat(matched)
 	}
 	breadcrumb.value = matched
 }
@@ -24,28 +27,29 @@ const exit = () => {
 	router.push('/login')
 }
 
-watchEffect(()=>{
+watchEffect(() => {
 	getBreadcrumb()
 })
-
 </script>
 
 <template>
-	<div class="bread">
-		<el-breadcrumb separator="/">
-			<template
-			  v-for="item in breadcrumb"
-			>
-				<el-breadcrumb-item
-				  :to="item.path"
-				>
-				{{ item.meta.title }}
-				</el-breadcrumb-item>
-			</template>
-			
-		</el-breadcrumb>
-		<el-button @click="exit">退出登录</el-button>
-	</div>
+  <div class="bread">
+    <el-breadcrumb separator="/">
+      <template
+        v-for="item in breadcrumb"
+        :key="item.path"
+      >
+        <el-breadcrumb-item
+          :to="item.path"
+        >
+          {{ item.meta.title }}
+        </el-breadcrumb-item>
+      </template>
+    </el-breadcrumb>
+    <el-button @click="exit">
+      退出登录
+    </el-button>
+  </div>
 </template>
 
 <style scoped lang="scss">

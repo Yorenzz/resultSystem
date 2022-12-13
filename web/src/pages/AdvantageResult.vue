@@ -1,24 +1,18 @@
 <script setup>
-import {
-  ref,
-  computed,
-  watch,
-  reactive,
-  onMounted,
-  watchEffect,
-} from 'vue'
+import { ref,
+	computed,
+	watch,
+	reactive,
+	onMounted,
+	watchEffect } from 'vue'
 import { useClassStore } from '../store/classMessage.js'
-import {
-  CLASS_TRANSLATE,
-  CLASS_TRANSLATE_REVERSE,
-  SUBJECT_TRANSLATE,
-  GRADE_SUBJECT,
-  CLASS_MAP,
-} from '../constant/index.js'
-import {
-  advantageResult,
-  advantageResultByGrade,
-} from '../api/index.js'
+import { CLASS_TRANSLATE,
+	CLASS_TRANSLATE_REVERSE,
+	SUBJECT_TRANSLATE,
+	GRADE_SUBJECT,
+	CLASS_MAP } from '../constant/index.js'
+import { advantageResult,
+	advantageResultByGrade } from '../api/index.js'
 import * as echarts from 'echarts/core'
 import '../common/echartsUse.js'
 
@@ -34,208 +28,200 @@ const gradeAdv = ref([])
 let myChart = null
 let totalChart = null
 const loading = reactive({
-  table: false,
-  chart: false,
+	table: false,
+	chart: false,
 })
 const chartRef = ref(null)
 const totalChartRef = ref(null)
 
 const perClass = computed(() => {
-  return store
-    .getPerClass(checkedGrade.value)
-    .map(item => {
-      return CLASS_TRANSLATE[item.Class]
-    })
+	return store
+		.getPerClass(checkedGrade.value)
+		.map(item => {
+			return CLASS_TRANSLATE[item.Class]
+		})
 })
 
 const classFormat = computed(() => {
-  return checkedClass.value.map(item => {
-    return CLASS_TRANSLATE_REVERSE[item]
-  })
+	return checkedClass.value.map(item => {
+		return CLASS_TRANSLATE_REVERSE[item]
+	})
 })
 
 const chartAxisData = computed(() => {
-  const arr = GRADE_SUBJECT[
-    checkedGrade.value
-  ].map(item => {
-    return SUBJECT_TRANSLATE[item]
-  })
-  arr.pop()
-  return arr
+	const arr = GRADE_SUBJECT[
+		checkedGrade.value
+	].map(item => {
+		return SUBJECT_TRANSLATE[item]
+	})
+	arr.pop()
+	return arr
 })
 
 const totalAdvData = ref([])
 
 const chartData = computed(() => {
-  totalAdvData.value = []
-  return gradeAdv.value.map(
-    (perClassValue, index) => {
-      const perCLassAdv = perClassValue.map(
-        perSubject => {
-          return perSubject[
-            Object.keys(perSubject)[0]
-          ]
-        },
-      )
-      const total = perCLassAdv.pop()
-      console.log(total)
-      totalAdvData.value.push({
-        name: perClass.value[index],
-        type: 'bar',
-        data: [total],
-      })
-      return {
-        name: perClass.value[index],
-        type: 'bar',
-        data: perCLassAdv,
-      }
-    },
-  )
+	totalAdvData.value = []
+	return gradeAdv.value.map(
+		(perClassValue, index) => {
+			const perCLassAdv = perClassValue.map(
+				perSubject => {
+					return perSubject[
+						Object.keys(perSubject)[0]
+					]
+				},
+			)
+			const total = perCLassAdv.pop()
+			console.log(total)
+			totalAdvData.value.push({
+				name: perClass.value[index],
+				type: 'bar',
+				data: [total],
+			})
+			return {
+				name: perClass.value[index],
+				type: 'bar',
+				data: perCLassAdv,
+			}
+		},
+	)
 })
 
 const handleCheckAllChange = val => {
-  checkedClass.value = val ? perClass.value : []
-  isIndeterminate.value = false
+	checkedClass.value = val ? perClass.value : []
+	isIndeterminate.value = false
 }
 
 const handleCheckedCitiesChange = value => {
-  const checkedCount = value.length
-  checkAll.value =
-    checkedCount === perClass.value.length
-  isIndeterminate.value =
-    checkedCount > 0 &&
-    checkedCount < perClass.value.length
+	const checkedCount = value.length
+	checkAll.value
+    = checkedCount === perClass.value.length
+	isIndeterminate.value
+    = checkedCount > 0
+    && checkedCount < perClass.value.length
 }
 
 const getAdvantageResult = (
-  grade,
-  Class,
-  testTime,
+	grade,
+	Class,
+	testTime,
 ) => {
-  loading.table = true
-  advantageResult(grade, Class, testTime)
-    .then(res => {
-      !testTime && (resultAdv.value = res)
-      testTime && (resultNextAdv.value = res)
-    })
-    .catch(err => {
-      console.warn(err)
-    })
-    .finally(() => {
-      loading.table = false
-    })
+	loading.table = true
+	advantageResult(grade, Class, testTime)
+		.then(res => {
+			!testTime && (resultAdv.value = res)
+			testTime && (resultNextAdv.value = res)
+		})
+		.catch(err => {
+			console.warn(err)
+		})
+		.finally(() => {
+			loading.table = false
+		})
 }
 
 const getPerAdvantage = grade => {
-  loading.chart = true
-  advantageResultByGrade(grade)
-    .then(res => {
-      gradeAdv.value = res
-      myChart.setOption(option.value, true)
+	loading.chart = true
+	advantageResultByGrade(grade)
+		.then(res => {
+			gradeAdv.value = res
+			myChart.setOption(option.value, true)
 
-      totalChart.setOption(
-        totalOption.value,
-        true,
-      )
-    })
-    .catch(err => {
-      console.warn(err)
-    })
-    .finally(() => {
-      loading.chart = false
-    })
+			totalChart.setOption(
+				totalOption.value,
+				true,
+			)
+		})
+		.catch(err => {
+			console.warn(err)
+		})
+		.finally(() => {
+			loading.chart = false
+		})
 }
 
 const option = computed(() => ({
-  title: {
-    text: '各班平均分柱状图',
-  },
-  legend: {},
-  tooltip: {},
-  xAxis: {
-    data: chartAxisData.value,
-  },
-  yAxis: {},
-  series: chartData.value,
+	title: { text: '各班平均分柱状图' },
+	legend: {},
+	tooltip: {},
+	xAxis: { data: chartAxisData.value },
+	yAxis: {},
+	series: chartData.value,
 }))
 
 const totalOption = computed(() => ({
-  title: {
-    text: '总分',
-    left: 0,
-    top: 0,
-  },
-  legend: {},
-  tooltip: {},
-  xAxis: {
-    data: ['总分'],
-  },
-  yAxis: {},
-  series: totalAdvData.value,
+	title: {
+		text: '总分',
+		left: 0,
+		top: 0,
+	},
+	legend: {},
+	tooltip: {},
+	xAxis: { data: ['总分'] },
+	yAxis: {},
+	series: totalAdvData.value,
 }))
 
 handleCheckAllChange()
 
 getAdvantageResult(
-  checkedGrade.value,
-  checkedClass.value,
+	checkedGrade.value,
+	checkedClass.value,
 )
 getAdvantageResult(
-  checkedGrade.value,
-  checkedClass.value,
-  2,
+	checkedGrade.value,
+	checkedClass.value,
+	2,
 )
 
 onMounted(() => {
-  myChart = echarts.init(chartRef.value)
-  totalChart = echarts.init(totalChartRef.value)
+	myChart = echarts.init(chartRef.value)
+	totalChart = echarts.init(totalChartRef.value)
 })
 
 watch(
-  () => checkedGrade.value,
-  val => {
-    getPerAdvantage(val)
-    getAdvantageResult(val, classFormat.value)
-    getAdvantageResult(val, classFormat.value, 2)
-  },
-  {
-    immediate: true,
-  },
+	() => checkedGrade.value,
+	val => {
+		getPerAdvantage(val)
+		getAdvantageResult(val, classFormat.value)
+		getAdvantageResult(val, classFormat.value, 2)
+	},
+	{ immediate: true },
 )
 watch(
-  () => classFormat.value,
-  val => {
-    getAdvantageResult(checkedGrade.value, val)
-    getAdvantageResult(checkedGrade.value, val, 2)
-  },
-  {
-    immediate: false,
-    deep: true,
-  },
+	() => classFormat.value,
+	val => {
+		getAdvantageResult(checkedGrade.value, val)
+		getAdvantageResult(checkedGrade.value, val, 2)
+	},
+	{
+		immediate: false,
+		deep: true,
+	},
 )
 watch(
-  () => option.value,
-  val => {
-    myChart.setOption(option.value, true, true)
-  },
-  {
-    immediate: false,
-    deep: true,
-  },
+	() => option.value,
+	val => {
+		myChart.setOption(option.value, true, true)
+	},
+	{
+		immediate: false,
+		deep: true,
+	},
 )
 watch(
-  () => totalOption.value,
-  val => {
-    totalChart.setOption(
-      totalOption.value,
-      true,
-      true,
-    )
-  },
-  {
-    immediate: false,
-    deep: true,
-  },
+	() => totalOption.value,
+	val => {
+		totalChart.setOption(
+			totalOption.value,
+			true,
+			true,
+		)
+	},
+	{
+		immediate: false,
+		deep: true,
+	},
 )
 </script>
 
@@ -304,6 +290,7 @@ watch(
         >
           <template
             v-for="(item, index) in resultAdv"
+            :key="index"
           >
             <el-descriptions-item
               :label="
@@ -327,6 +314,7 @@ watch(
         >
           <template
             v-for="(item, index) in resultNextAdv"
+            :key="index"
           >
             <el-descriptions-item
               :label="
@@ -349,14 +337,13 @@ watch(
         id="main"
         ref="chartRef"
         v-loading="loading.chart"
-      >
-      </div>
+      />
       <div
         class="total-adv-chart"
         id="total"
         ref="totalChartRef"
         v-loading="loading.chart"
-      ></div>
+      />
     </div>
   </div>
 </template>

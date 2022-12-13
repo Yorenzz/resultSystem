@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const collapse = ref(false)
 </script>
 
 <template>
@@ -21,23 +20,33 @@ const collapse = ref(false)
     </el-menu-item>
     <el-menu-item index="/personal-result">
       <el-icon><Menu /></el-icon>
-      <template #title>个人成绩</template>
+      <template #title>
+        个人成绩
+      </template>
     </el-menu-item>
     <el-menu-item index="/advantage-result">
       <el-icon><document /></el-icon>
-      <template #title>平均成绩</template>
+      <template #title>
+        平均成绩
+      </template>
     </el-menu-item>
     <el-menu-item index="/rank">
       <el-icon><setting /></el-icon>
-      <template #title>成绩排名</template>
+      <template #title>
+        成绩排名
+      </template>
     </el-menu-item>
     <el-menu-item index="/pass-rate">
       <el-icon><setting /></el-icon>
-      <template #title>统计</template>
+      <template #title>
+        统计
+      </template>
     </el-menu-item>
     <el-menu-item index="/result-rate">
       <el-icon><setting /></el-icon>
-      <template #title>分数段条形图</template>
+      <template #title>
+        分数段条形图
+      </template>
     </el-menu-item>
     <el-sub-menu index="/upload-result">
       <template #title>

@@ -1,9 +1,9 @@
-<script setup >
-</script >
+<script setup>
+</script>
 
-<template >
-    passrate
-</template >
+<template>
+  passrate
+</template>
 
-<style scoped >
-</style >
+<style scoped>
+</style>

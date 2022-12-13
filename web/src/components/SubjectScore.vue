@@ -1,27 +1,25 @@
 <script setup>
-import {
-  SUBJECT_TRANSLATE,
-  GRADE_SUBJECT,
-} from '../constant/index.js'
+import { SUBJECT_TRANSLATE,
+	GRADE_SUBJECT } from '../constant/index.js'
 import { computed } from 'vue'
 
 const props = defineProps({
-  subject: {
-    type: String,
-    default: '',
-  },
-  score: {
-    type: Number,
-    default: null,
-  },
-  msg: {
-    type: Object,
-    default: {},
-  },
+	subject: {
+		type: String,
+		default: '',
+	},
+	score: {
+		type: Number,
+		default: null,
+	},
+	msg: {
+		type: Object,
+		default: () => {},
+	},
 })
 
 const gradeSubject = computed(() => {
-  return GRADE_SUBJECT[props.msg.Grade]
+	return GRADE_SUBJECT[props.msg.Grade]
 })
 </script>
 
@@ -32,12 +30,16 @@ const gradeSubject = computed(() => {
       gradeSubject.indexOf(props.subject) !== -1
     "
   >
-    <div>{{
-      SUBJECT_TRANSLATE[props.subject]
-    }}</div>
-    <div>{{
-      props.score ? props.score : '--'
-    }}</div>
+    <div>
+      {{
+        SUBJECT_TRANSLATE[props.subject]
+      }}
+    </div>
+    <div>
+      {{
+        props.score ? props.score : '--'
+      }}
+    </div>
   </el-card>
 </template>
 

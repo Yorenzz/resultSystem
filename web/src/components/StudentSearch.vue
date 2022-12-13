@@ -3,50 +3,49 @@ import { searchStudent } from '../api/index.js'
 import { reactive, watch } from 'vue'
 
 const props = defineProps({
-  student: {
-    type: [Number, null],
-    default: null,
-  },
+	student: {
+		type: [Number, null],
+		default: null,
+	},
 })
 
 const emit = defineEmits(['update:student'])
 
 const search = reactive({
-  studentID: null,
-  searchList: [],
+	studentID: null,
+	searchList: [],
 })
 const loading = reactive({
-  tree: false,
-  search: false,
+	tree: false,
+	search: false,
 })
 const handleChange = () => {
-  if (!search.studentID) {
-    emit('update:student', null)
-  } else {
-    emit('update:student', search.studentID)
-  }
+	if (!search.studentID) {
+		emit('update:student', null)
+	} else {
+		emit('update:student', search.studentID)
+	}
 }
 const remoteMethod = keyword => {
-  console.log(keyword)
-  if (keyword) {
-    loading.search = true
-    searchStudent(keyword).then(res => {
-      search.searchList = res
-      loading.search = false
-    })
-  } else {
-    search.searchList = []
-  }
+	if (keyword) {
+		loading.search = true
+		searchStudent(keyword).then(res => {
+			search.searchList = res
+			loading.search = false
+		})
+	} else {
+		search.searchList = []
+	}
 }
 
 watch(
-  () => props.student,
-  val => {
-    if (!val) {
-      ;(search.studentID = null),
-        (search.searchList = [])
-    }
-  },
+	() => props.student,
+	val => {
+		if (!val) {
+			search.studentID = null
+			search.searchList = []
+		}
+	},
 )
 </script>
 

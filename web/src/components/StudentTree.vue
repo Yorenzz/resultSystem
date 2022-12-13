@@ -1,105 +1,91 @@
 <script setup>
 import { reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import {
-  getStudentInformation,
-  searchStudent,
-} from '../api'
+import { getStudentInformation,
+	searchStudent } from '../api'
 import StudentSearch from './StudentSearch.vue'
 
 const route = useRoute()
 const router = useRouter()
 
 const props = defineProps({
-  student: {
-    type: [Number, null],
-    default: null,
-  },
+	student: {
+		type: [Number, null],
+		default: null,
+	},
 })
 
 const searchStudentID = ref(null)
 
 const selectStudent = ref(null)
 
-const emit = defineEmits([
-  'update:student',
-  'getStudentResult',
-])
+const emit = defineEmits(['update:student',
+	'getStudentResult'])
 
-const loading = reactive({
-  tree: false,
-})
+const loading = reactive({ tree: false })
 const tree = ref([])
 
 const treeRef = ref(null)
 
 const handleNodeClick = data => {
-  if (data?.StudentID) {
-    selectStudent.value = data.StudentID
-    const query = { ...route.query }
-    router.push({
-      query: Object.assign(query, {
-        id: data.StudentID,
-      }),
-    })
-    searchStudentID.value = null
-    emit('update:student', selectStudent.value)
-  }
+	if (data?.StudentID) {
+		selectStudent.value = data.StudentID
+		const query = { ...route.query }
+		router.push({ query: Object.assign(query, { id: data.StudentID }) })
+		searchStudentID.value = null
+		emit('update:student', selectStudent.value)
+	}
 }
 
 const setNotExpanded = () => {
-  tree.value.forEach(item => {
-    const node =
-      treeRef.value.store.nodesMap[item.children]
-    if (node) {
-      node.expanded = false
-    }
-  })
+	tree.value.forEach(item => {
+		const node
+      = treeRef.value.store.nodesMap[item.children]
+		if (node) {
+			node.expanded = false
+		}
+	})
 }
 
 const searchChange = val => {
-  setNotExpanded()
-  selectStudent.value = val
-  emit('update:student', selectStudent.value)
+	setNotExpanded()
+	selectStudent.value = val
+	emit('update:student', selectStudent.value)
 
-  const query = { ...route.query }
-  router.push({
-    query: Object.assign(query, {
-      id: val,
-    }),
-  })
-  treeRef.value.setCurrentKey(val)
-  setTimeout(() => {
-    document.getElementById(val).scrollIntoView({
-      block: 'start',
-      behavior: 'smooth',
-    })
-  }, 1000)
+	const query = { ...route.query }
+	router.push({ query: Object.assign(query, { id: val }) })
+	treeRef.value.setCurrentKey(val)
+	setTimeout(() => {
+		document.getElementById(val).scrollIntoView({
+			block: 'start',
+			behavior: 'smooth',
+		})
+	}, 1000)
 }
 
 const getTreeData = () => {
-  loading.tree = true
-  getStudentInformation()
-    .then(res => {
-      const { treeData } = res
-      tree.value = treeData
-    })
-    .catch(e => {
-      console.warn(e)
-    })
-    .finally(() => {
-      loading.tree = false
-    })
+	loading.tree = true
+	getStudentInformation()
+		.then(res => {
+			const { treeData } = res
+			tree.value = treeData
+		})
+		.catch(e => {
+			console.warn(e)
+		})
+		.finally(() => {
+			loading.tree = false
+		})
 }
 
 getTreeData()
 
 watch(searchStudentID, val => {
-  if (val) {
-    searchChange(val)
-  } else {
-    emit('update:student', null)
-  }
+	if (val) {
+		searchChange(val)
+	} else {
+		emit('update:student', null)
+	}
 })
 </script>
 

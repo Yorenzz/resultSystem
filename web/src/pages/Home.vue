@@ -7,21 +7,23 @@ import { useClassStore } from '../store/classMessage.js'
 
 const store = useClassStore()
 const getPerClass = () => {
-  getClass(1).then(res => {
-    store.setOne(res)
-  })
-  getClass(2).then(res => {
-    store.setTwo(res)
-  })
-  getClass(3).then(res => {
-    store.setThree(res)
-  })
+	getClass(1).then(res => {
+		store.setOne(res)
+	})
+	getClass(2).then(res => {
+		store.setTwo(res)
+	})
+	getClass(3).then(res => {
+		store.setThree(res)
+	})
 }
 getPerClass()
 </script>
 
 <template>
-  <div class="nav-side"><LeftNav /></div>
+  <div class="nav-side">
+    <LeftNav />
+  </div>
   <div class="basic-layout">
     <div class="nav-top">
       <BreadCrumb />

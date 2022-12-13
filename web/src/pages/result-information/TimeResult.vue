@@ -39,7 +39,7 @@ testTimeMes()
     </div>
     <div class="calendar-content">
       <el-calendar>
-        <template #dateCell="{ data }">
+        <template #date-cell="{ data }">
           <div>{{ +data.day.split('-').slice(2).join() }}</div>
           <div>{{ isTestTime(data.day) }}</div>
         </template>

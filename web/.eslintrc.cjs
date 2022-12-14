@@ -80,6 +80,7 @@ module.exports = {
         }
       }
     }],
+    "vue/valid-v-slot": "off",
     "vue/html-closing-bracket-newline": "error",
     "vue/html-closing-bracket-spacing": "error",
     "vue/html-end-tags": "error",

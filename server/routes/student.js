@@ -149,7 +149,7 @@ router.get('/templateLink', async (ctx, next) => {
 
 router.get('/downloadStudentTemplate', async (ctx, next) => {
   const templatePath = './public/template/学生信息模板.xlsx'
-  ctx.attachment(templatePath)
+  ctx.attachment(templatePath,{})
   await send(ctx, templatePath)
 })
 

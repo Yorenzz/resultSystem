@@ -5,7 +5,7 @@ const {
   getAdvantage,
   getPerAdvantageByGrade,
   getResultRank,
-  insertStudentResult,
+  insertStudentResult, getInitialNumber, getActualNumber, getAdvantageBySubject,
 } = require('../server/result')
 const { getPerStudentMessage } = require('../server/student')
 
@@ -21,6 +21,12 @@ router.get('/studentResult', async (ctx, next) => {
 router.post('/getAdvantage', async (ctx, next) => {
   const { grade, Class, testTime } = ctx.request.body
   const res = await getAdvantage(grade, Class, testTime)
+  ctx.body = utils.success(res)
+})
+
+router.post('/getAdvantageBySubject', async (ctx, next) => {
+  const { grade, Class, subject, testTime } = ctx.request.body
+  const res = await getAdvantageBySubject(grade, Class, subject, testTime)
   ctx.body = utils.success(res)
 })
 
@@ -47,6 +53,16 @@ router.post('/insertStudentResult', async (ctx, next) => {
   const res = await insertStudentResult(data)
   console.log(res)
   ctx.body = utils.success(res, '上传成功')
+  // ctx.body = utils.success(res)
+})
+
+router.post('/statisticNumber', async (ctx, next) => {
+  const { grade, Class, subject } = ctx.request.body
+  console.log(grade, Class, subject)
+  const initialNumber = await getInitialNumber(grade, Class)
+  const actualNumber = await getActualNumber(grade, Class, subject)
+  // console.log(res)
+  ctx.body = utils.success({ initialNumber: initialNumber.num, actualNumber: actualNumber.num })
   // ctx.body = utils.success(res)
 })
 

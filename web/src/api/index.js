@@ -160,3 +160,11 @@ export const getRank = (grade, Class, subject) => {
 		data: { grade, Class, subject },
 	})
 }
+
+export const getStatisticNumber = (grade, Class, subject) => {
+	return request({
+		method: 'POST',
+		url: '/result/statisticNumber',
+		data: { grade, Class, subject },
+	})
+}

@@ -1,4 +1,4 @@
-const { querySql } = require('../db')
+const { querySql, querySqlOne} = require('../db')
 const { table, GRADE_SUBJECT, SUBJECT_TRANSLATE } = require('../config')
 const { getClass } = require('../server/student')
 const time = 1
@@ -33,8 +33,12 @@ const getAdvantage = (grade, Class, testTime = time) => {
   )
 }
 
+const getAdvantageBySubject = (grade, Class, subject, testTime = time) => {
+  const sql = `select AVG(${subject} as ${subject} from ${table.resultDetail} where ${subject} is not null and TestTime = ${testTime} and Grade = ${grade} ${Class?`and Class = ${Class}`:''})`
+  return querySqlOne(sql)
+}
+
 const getPerAdvantageByGrade = async (grade, testTime = 1) => {
-  console.log('grade', grade)
   const perClass = await getClass(grade)
   return Promise.all(
     perClass.map(perClass => {
@@ -51,6 +55,7 @@ const getPerAdvantageByGrade = async (grade, testTime = 1) => {
     }),
   )
 }
+
 
 const getResultRank = (grade, Class, subject) => {
   console.log(grade, Class, subject)
@@ -87,6 +92,17 @@ const insertStudentResult = data => {
   return querySql(sql.slice(0, -2))
 }
 
+// 原有人数、实考人数、最高分、最低分
+const getInitialNumber = (grade, Class, testTime = time) => {
+  const sql = `select count(*) as num from ${table.resultDetail} where Grade = ${grade} ${Class?`and Class = ${Class}`:''} and TestTime = ${testTime}`
+  return querySqlOne(sql)
+}
+
+const getActualNumber = (grade, Class, subject, testTime = time) => {
+  const sql = `select count(*) as num from ${table.resultDetail} where Grade = ${grade} ${Class?`and Class = ${Class}`:''} and ${subject} is not null and TestTime = ${testTime}`
+  return querySqlOne(sql)
+}
+
 module.exports = {
   getAdvantage,
   getResult,
@@ -94,4 +110,7 @@ module.exports = {
   getPerAdvantageByGrade,
   getResultRank,
   insertStudentResult,
+  getInitialNumber,
+  getActualNumber,
+  getAdvantageBySubject
 }

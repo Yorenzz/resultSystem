@@ -1,0 +1,48 @@
+module.exports = {
+	env: {
+		browser: true,
+		commonjs: true,
+		es2021: true,
+	},
+	extends: 'standard',
+	overrides: [
+	],
+	parserOptions: { ecmaVersion: 'latest' },
+	rules: {
+		'no-console': 'warn',
+		'no-tabs': 'off',
+		'no-mixed-spaces-and-tabs': 'off',
+		'array-bracket-spacing': ['error', 'never'],
+		'brace-style': 'error',
+		camelcase: 'error',
+		'comma-dangle': ['error', 'always-multiline'],
+		'comma-spacing': ['error', { before: false, after: true }],
+		'comma-style': ['error', 'last'],
+		// "function-paren-newline": ["error", "multiline"]
+		indent: ['error', 'tab'],
+		'key-spacing': ['error', { beforeColon: false, afterColon: true }],
+		'no-multiple-empty-lines': 'error',
+		'no-trailing-spaces': 'error',
+		'no-unneeded-ternary': 'error',
+		'no-whitespace-before-property': 'error',
+		'no-unused-vars': 'warn',
+		'no-use-before-define': 'error',
+		'object-property-newline': 'error',
+		'object-curly-newline': [
+			'error', {
+				ObjectExpression: { multiline: true },
+				ObjectPattern: { multiline: true },
+				ImportDeclaration: 'never',
+				ExportDeclaration: 'never',
+			},
+		],
+		'object-curly-spacing': ['error', 'always'],
+		'operator-linebreak': ['error', 'before'],
+		quotes: ['error', 'single', { avoidEscape: true }],
+		semi: ['error', 'never'],
+		'space-before-blocks': 'error',
+		'space-infix-ops': 'error',
+		'arrow-spacing': 'error',
+		eqeqeq: 'error',
+	},
+}

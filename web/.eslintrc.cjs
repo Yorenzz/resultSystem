@@ -27,7 +27,7 @@ module.exports = {
     "comma-spacing": ["error", { "before": false, "after": true }],
     "comma-style": ["error", "last"],
     // "function-paren-newline": ["error", "multiline"]
-    "indent": ["error", "tab"],
+    "indent": ["error", 'tab'],
     "key-spacing": ["error", {"beforeColon": false, "afterColon": true}],
     "no-multiple-empty-lines": "error",
     "no-trailing-spaces": "error",

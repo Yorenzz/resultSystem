@@ -5,11 +5,16 @@ import { CLASS_TRANSLATE,
 	CLASS_TRANSLATE_REVERSE,
 	SUBJECT_TRANSLATE,
 	GRADE_SUBJECT } from '../constant/index.js'
-import { getStatisticNumber } from '../api/index.js'
+import { getStatisticNumber, getEstScore } from '../api/index.js'
 
 const store = useClassStore()
 
-const loading = reactive({ table: false })
+const loading = reactive({
+	table: false,
+	statistic: false,
+	highest: false,
+	lowest: false,
+})
 
 const checkedGrade = ref(1)
 const checkedClass = ref(null)
@@ -17,6 +22,8 @@ const checkedSubject = ref('Chinese')
 
 const initialNumber = ref()
 const actualNumber = ref()
+const highestScore = ref()
+const lowestScore = ref()
 
 const perClass = computed(() => {
 	return store
@@ -32,15 +39,42 @@ const perSubject = computed(() => {
 	return GRADE_SUBJECT[checkedGrade.value]
 })
 const getStatistic = () => {
+	loading.statistic = true
 	getStatisticNumber(checkedGrade.value, classFormat.value, checkedSubject.value).then((res) => {
 		console.log(res)
+		loading.statistic = false
 		initialNumber.value = res.initialNumber
 		actualNumber.value = res.actualNumber
 	})
 }
+
+const getHighestResult = () => {
+	loading.highest = true
+	getEstScore('high', checkedGrade.value, classFormat.value, checkedSubject.value).then((res) => {
+		console.log('high', res)
+		loading.highest = false
+		highestScore.value = res.num
+	})
+}
+const getLowestResult = () => {
+	loading.lowest = true
+	getEstScore('low', checkedGrade.value, classFormat.value, checkedSubject.value).then((res) => {
+		console.log('low', res)
+		loading.lowest = false
+		lowestScore.value = res.num
+	})
+}
 getStatistic()
+getHighestResult()
+getLowestResult()
 const handleCancel = () => {
 	checkedClass.value = null
+}
+
+const handleChange = () => {
+	getStatistic()
+	getHighestResult()
+	getLowestResult()
 }
 </script>
 
@@ -51,7 +85,7 @@ const handleCancel = () => {
         <div class="grade-select">
           <el-radio-group
             v-model="checkedGrade"
-            @change="getStatistic"
+            @change="handleChange"
           >
             <el-radio-button
               :label="1"
@@ -78,14 +112,14 @@ const handleCancel = () => {
           <el-radio-group
             class="class-select"
             v-model="checkedClass"
-            @change="getStatistic"
+            @change="handleChange"
           >
             <el-button
               link
               type="primary"
               @click="handleCancel"
             >
-              取消选中班级
+              取消选中班级.
             </el-button>
             <el-radio
               v-for="item in perClass"
@@ -99,7 +133,7 @@ const handleCancel = () => {
           <el-radio-group
             class="class-select"
             v-model="checkedSubject"
-            @change="getStatistic"
+            @change="handleChange"
           >
             <el-radio
               v-for="item in perSubject"
@@ -115,11 +149,82 @@ const handleCancel = () => {
     </div>
     <div class="right-content">
       <div class="statistic-data">
-        <div>原有人数:{{ initialNumber }}</div>
-        <div>实考人数:{{ actualNumber }}</div>
-        <div>平均分:</div>
-        <div>最高分:</div>
-        <div>最低分:</div>
+        <div class="fl">
+          <div class="no-wrap">
+            原有人数:
+          </div>
+          <el-skeleton
+            animated
+            :loading="loading.statistic"
+            :rows="0"
+            class="fl ml-8"
+          >
+            <template #template>
+              <el-skeleton-item
+                variant="p"
+                style="width: 90%"
+              />
+            </template>
+            {{ initialNumber }}
+          </el-skeleton>
+        </div>
+        <div class="fl">
+          <div class="no-wrap">
+            实考人数:
+          </div>
+          <el-skeleton
+            animated
+            :loading="loading.statistic"
+            :rows="0"
+            class="fl ml-8"
+          >
+            <template #template>
+              <el-skeleton-item
+                variant="p"
+                style="width: 90%"
+              />
+            </template>
+            {{ actualNumber }}
+          </el-skeleton>
+        </div>
+        <div class="fl">
+          <div class="no-wrap">
+            最高分:
+          </div>
+          <el-skeleton
+            animated
+            :loading="loading.highest"
+            :rows="0"
+            class="fl ml-8"
+          >
+            <template #template>
+              <el-skeleton-item
+                variant="p"
+                style="width: 90%"
+              />
+            </template>
+            {{ highestScore }}
+          </el-skeleton>
+        </div>
+        <div class="fl">
+          <div class="no-wrap">
+            最低分:
+          </div>
+          <el-skeleton
+            animated
+            :loading="loading.lowest"
+            :rows="0"
+            class="fl ml-8"
+          >
+            <template #template>
+              <el-skeleton-item
+                variant="p"
+                style="width: 90%"
+              />
+            </template>
+            {{ lowestScore }}
+          </el-skeleton>
+        </div>
       </div>
       <div class="statistic-chart">
         优秀人数
@@ -167,10 +272,27 @@ const handleCancel = () => {
 
     .statistic-data {
       width: 100%;
-      display: flex;
-      justify-content: space-around;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      justify-items: center;
       align-items: center;
     }
   }
 }
+
+.fl {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.ml-8 {
+  margin-left: 8px;
+}
+
+.no-wrap {
+  white-space: nowrap;
+}
+
+.w-90 {}
 </style>

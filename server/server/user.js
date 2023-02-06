@@ -16,5 +16,5 @@ const isHaveUsername = (username) => {
 module.exports = {
 	Login,
 	Register,
-	isHaveUsername
+	isHaveUsername,
 }

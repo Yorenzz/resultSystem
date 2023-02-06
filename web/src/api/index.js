@@ -168,3 +168,11 @@ export const getStatisticNumber = (grade, Class, subject) => {
 		data: { grade, Class, subject },
 	})
 }
+
+export const getEstScore = (flag, grade, Class, subject) => {
+	return request({
+		method: 'POST',
+		url: '/result/getHighestScore',
+		data: { flag, grade, Class, subject },
+	})
+}

@@ -28,41 +28,38 @@ app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
 app.use(
-  koaBody({
-    multipart: true,
-    formidable: {
-      maxFileSize: 200 * 1024 * 1024, // 设置上传文件大小最大限制，默认2M
-    },
-  }),
+	koaBody({
+		multipart: true,
+		formidable: { maxFileSize: 200 * 1024 * 1024, // 设置上传文件大小最大限制，默认2M
+		},
+	}),
 )
 app.use(
-  views(__dirname + '/views', {
-    extension: 'pug',
-  }),
+	views(__dirname + '/views', { extension: 'pug' }),
 )
 
 // logger
 app.use(async (ctx, next) => {
-  // log4js.info(`get params:${JSON.stringify(ctx.request.query)}`)
-  // log4js.info(`post params:${JSON.stringify(ctx.request.body)}`)
-  await next().catch(err => {
-    if (err.status === 401) {
-      ctx.status = 200
-      ctx.body = util.fail('登录失效', '', util.CODE.AUTH_ERROR)
-    } else {
-      throw err
-    }
-  })
+	// log4js.info(`get params:${JSON.stringify(ctx.request.query)}`)
+	// log4js.info(`post params:${JSON.stringify(ctx.request.body)}`)
+	await next().catch(err => {
+		if (err.status === 401) {
+			ctx.status = 200
+			ctx.body = util.fail('登录失效', '', util.CODE.AUTH_ERROR)
+		} else {
+			throw err
+		}
+	})
 })
 
 app.use(
-  jwt({ secret: 'Yorenz' }).unless({
-    path: [
-      /^\/users\/login/,
-      /^\/users\/register/,
-      /^\/student\/downloadStudentTemplate/,
-    ],
-  }),
+	jwt({ secret: 'Yorenz' }).unless({
+		path: [
+			/^\/users\/login/,
+			/^\/users\/register/,
+			/^\/student\/downloadStudentTemplate/,
+		],
+	}),
 )
 
 // routes
@@ -73,7 +70,7 @@ app.use(result.routes(), result.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
-  console.error('server error', err, ctx)
+	console.error('server error', err, ctx)
 })
 
 module.exports = app

@@ -7,7 +7,7 @@ const connect = () => {
 		user: config.user,
 		password: config.password,
 		database: config.database,
-		multipleStatements: true
+		multipleStatements: true,
 	})
 }
 
@@ -57,5 +57,5 @@ const querySqlOne = (sql) => {
 
 module.exports = {
 	querySql,
-	querySqlOne
+	querySqlOne,
 }

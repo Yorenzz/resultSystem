@@ -1,5 +1,5 @@
 const { querySql, querySqlOne } = require('../db')
-const { table, GRADE_SUBJECT, SUBJECT_TRANSLATE } = require('../config')
+const { table, GRADE_SUBJECT, GOOD_MAP, TOTAL_GOOD_MAP, PASS_MAP, TOTAL_PASS_MAP } = require('../config')
 const { getClass } = require('../server/student')
 const time = 1
 
@@ -19,8 +19,7 @@ const getAdvantage = (grade, Class, testTime = time) => {
 			let sql = 'select'
 			sql
         = sql
-        + ` AVG(${item}) as ${item} from ${table.resultDetail} where ${item} is not null and TestTime = ${testTime} and Grade = ${grade}`
-			// Class && (sql = sql + ` and Class = ${Class}`)
+        + ` round(AVG(${item}),2) as ${item} from ${table.resultDetail} where ${item} is not null and TestTime = ${testTime} and Grade = ${grade}`
 			if (Class.length) {
 				sql = sql + ' and ('
 				Class.map(item => {
@@ -35,7 +34,7 @@ const getAdvantage = (grade, Class, testTime = time) => {
 }
 
 const getAdvantageBySubject = (grade, Class, subject, testTime = time) => {
-	const sql = `select AVG(${subject} as ${subject} from ${table.resultDetail} where ${subject} is not null and TestTime = ${testTime} and Grade = ${grade} ${Class ? `and Class = ${Class}` : ''})`
+	const sql = `select round(AVG(${subject}, 2) as ${subject} from ${table.resultDetail} where ${subject} is not null and TestTime = ${testTime} and Grade = ${grade} ${Class ? `and Class = ${Class}` : ''})`
 	return querySqlOne(sql)
 }
 
@@ -48,7 +47,7 @@ const getPerAdvantageByGrade = async (grade, testTime = 1) => {
 					let sql = 'select'
 					sql
             = sql
-            + ` AVG(${item}) as ${item} from ${table.resultDetail} where ${item} is not null and TestTime = ${testTime} and Grade = ${grade} and Class = ${perClass.Class}`
+            + ` round(AVG(${item}),2) as ${item} from ${table.resultDetail} where ${item} is not null and TestTime = ${testTime} and Grade = ${grade} and Class = ${perClass.Class}`
 					// console.log(sql)
 					return (await querySql(sql))[0]
 				}),
@@ -106,8 +105,38 @@ const getActualNumber = (grade, Class, subject, testTime = time) => {
 const getEstScore = (flag, grade, Class, subject, testTime = time) => {
 	const est = flag === 'high' ? 'MAX' : 'MIN'
 	const sql = `select ${est}(${subject}) as num from ${table.resultDetail} where Grade = ${grade} ${Class ? `and Class = ${Class}` : ''} and ${subject} is not null and TestTime = ${testTime}`
-	console.log(sql)
+	// console.log(sql)
   	return querySqlOne(sql)
+}
+
+const getGoodNum = (grade, Class, subject, testTime = time) => {
+	let sql = ''
+	if (subject === 'Total') {
+		sql = `select count(${subject}) as num from ${table.resultDetail} where ${subject}>${TOTAL_GOOD_MAP[grade]} and Grade = ${grade} ${Class ? `and Class = ${Class}` : ''} and TestTime = ${testTime}`
+	} else {
+		sql = `select count(${subject}) as num from ${table.resultDetail} where ${subject}>${GOOD_MAP[subject]} and Grade = ${grade} ${Class ? `and Class = ${Class}` : ''} and TestTime = ${testTime}`
+	}
+	console.log(sql, grade, Class, subject)
+	return querySqlOne(sql)
+}
+
+const getPassNum = (grade, Class, subject, testTime = time) => {
+	let sql = ''
+	if (subject === 'Total') {
+		sql = `select count(${subject}) as num from ${table.resultDetail} where ${subject}>${TOTAL_PASS_MAP[grade]} and Grade = ${grade} ${Class ? `and Class = ${Class}` : ''} and TestTime = ${testTime}`
+	} else {
+		sql = `select count(${subject}) as num from ${table.resultDetail} where ${subject}>${PASS_MAP[subject]} and Grade = ${grade} ${Class ? `and Class = ${Class}` : ''} and TestTime = ${testTime}`
+	}
+	console.log(sql, grade, Class, subject)
+	return querySqlOne(sql)
+}
+
+const getScoreRange = (range, grade, Class, subject, testTime = time) => {
+	const sql = `select count(${subject}) as num from ${table.resultDetail} 
+								where ${subject}>=${range.min} and ${subject}<=${range.max}
+								and Grade = ${grade} ${Class ? `and Class = ${Class}` : ''} and TestTime = ${testTime}`
+
+	return querySqlOne(sql)
 }
 
 module.exports = {
@@ -121,4 +150,7 @@ module.exports = {
 	getActualNumber,
 	getAdvantageBySubject,
 	getEstScore,
+	getGoodNum,
+	getPassNum,
+	getScoreRange,
 }

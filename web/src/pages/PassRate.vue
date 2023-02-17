@@ -1,11 +1,13 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useClassStore } from '../store/classMessage.js'
 import { CLASS_TRANSLATE,
 	CLASS_TRANSLATE_REVERSE,
 	SUBJECT_TRANSLATE,
 	GRADE_SUBJECT } from '../constant/index.js'
-import { getStatisticNumber, getEstScore } from '../api/index.js'
+import { getStatisticNumber, getEstScore, getGoodRate, getPassRate } from '../api/index.js'
+import * as echarts from 'echarts/core'
+import { echartsInit } from '../common/echartsUse.js'
 
 const store = useClassStore()
 
@@ -24,6 +26,47 @@ const initialNumber = ref()
 const actualNumber = ref()
 const highestScore = ref()
 const lowestScore = ref()
+const goodNum = ref()
+const goodRate = computed(() => {
+	return actualNumber.value > 0 && goodNum.value > 0 ? ((goodNum.value / actualNumber.value) * 100).toFixed(2) : 0
+})
+const passNum = ref()
+const passRate = computed(() => {
+	return actualNumber.value > 0 && passNum.value > 0 ? ((passNum.value / actualNumber.value) * 100).toFixed(2) : 0
+})
+const noPassNum = computed(() => actualNumber.value - passNum.value)
+
+const rateChartRef = ref()
+let rateCharts = null
+
+const option = computed(() => {
+	return {
+		title: {
+			text: '优秀、及格情况统计',
+			left: 'center',
+			subtext: `优秀率：${goodRate.value}%\n\n及格率：${passRate.value}%`,
+		},
+		tooltip: { trigger: 'item' },
+		legend: {
+			orient: 'vertical',
+			left: 'left',
+		},
+		series: [{
+			type: 'pie',
+			radius: '50%',
+			data: [{ value: goodNum.value, name: '优秀人数' },
+				{ value: (passNum.value - goodNum.value), name: '及格人数' },
+				{ value: noPassNum.value, name: '不及格人数' }],
+			emphasis: {
+				itemStyle: {
+					shadowBlur: 10,
+					shadowOffsetX: 0,
+					shadowColor: 'rgba(0, 0, 0, 0.5)',
+				},
+			},
+		}],
+	}
+})
 
 const perClass = computed(() => {
 	return store
@@ -64,18 +107,58 @@ const getLowestResult = () => {
 		lowestScore.value = res.num
 	})
 }
+
+const getGood = () => {
+	// loading.lowest = true
+	getGoodRate(checkedGrade.value, classFormat.value, checkedSubject.value).then((res) => {
+		console.log('l', res)
+		// loading.lowest = false
+		goodNum.value = res
+	})
+}
+
+const getPass = () => {
+	// loading.lowest = true
+	getPassRate(checkedGrade.value, classFormat.value, checkedSubject.value).then((res) => {
+		console.log('l', res)
+		// loading.lowest = false
+		passNum.value = res
+	})
+}
+
 getStatistic()
 getHighestResult()
 getLowestResult()
+getGood()
+getPass()
 const handleCancel = () => {
 	checkedClass.value = null
+	handleChange()
 }
 
 const handleChange = () => {
 	getStatistic()
 	getHighestResult()
 	getLowestResult()
+	getGood()
+	getPass()
 }
+
+onMounted(() => {
+	rateCharts = echartsInit(rateChartRef.value)
+	rateCharts.setOption(option.value, true, true)
+})
+
+watch(
+	() => option.value,
+	val => {
+		rateCharts.setOption(option.value, true, true)
+	},
+	{
+		immediate: false,
+		deep: true,
+	},
+)
 </script>
 
 <template>
@@ -151,7 +234,7 @@ const handleChange = () => {
       <div class="statistic-data">
         <div class="fl">
           <div class="no-wrap">
-            原有人数:
+            原有人数:&emsp;
           </div>
           <el-skeleton
             animated
@@ -170,7 +253,7 @@ const handleChange = () => {
         </div>
         <div class="fl">
           <div class="no-wrap">
-            实考人数:
+            实考人数:&emsp;
           </div>
           <el-skeleton
             animated
@@ -189,7 +272,7 @@ const handleChange = () => {
         </div>
         <div class="fl">
           <div class="no-wrap">
-            最高分:
+            最高分:&emsp;
           </div>
           <el-skeleton
             animated
@@ -200,7 +283,7 @@ const handleChange = () => {
             <template #template>
               <el-skeleton-item
                 variant="p"
-                style="width: 90%"
+                style="width: 80%"
               />
             </template>
             {{ highestScore }}
@@ -208,7 +291,7 @@ const handleChange = () => {
         </div>
         <div class="fl">
           <div class="no-wrap">
-            最低分:
+            最低分:&emsp;
           </div>
           <el-skeleton
             animated
@@ -227,11 +310,10 @@ const handleChange = () => {
         </div>
       </div>
       <div class="statistic-chart">
-        优秀人数
-        优秀率
-        及格人数
-        及格率
-        不及格人数
+        <div
+          ref="rateChartRef"
+          class="rate"
+        />
       </div>
     </div>
   </div>
@@ -277,6 +359,16 @@ const handleChange = () => {
       justify-items: center;
       align-items: center;
     }
+
+    .statistic-chart {
+      margin-top: 16px;
+      width: 100%;
+      height: 100%;
+      .rate {
+        width: 100%;
+        height: 100%;
+      }
+    }
   }
 }
 
@@ -284,6 +376,8 @@ const handleChange = () => {
   display: flex;
   align-items: center;
   width: 100%;
+
+  justify-content: center;
 }
 
 .ml-8 {

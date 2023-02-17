@@ -1,23 +1,6 @@
 <script setup>
-import storage from '../utils/storage.js'
 import LeftNav from '../components/LeftNav.vue'
 import BreadCrumb from '../components/BreadCrumb.vue'
-import { getClass } from '../api/index.js'
-import { useClassStore } from '../store/classMessage.js'
-
-const store = useClassStore()
-const getPerClass = () => {
-	getClass(1).then(res => {
-		store.setOne(res)
-	})
-	getClass(2).then(res => {
-		store.setTwo(res)
-	})
-	getClass(3).then(res => {
-		store.setThree(res)
-	})
-}
-getPerClass()
 </script>
 
 <template>

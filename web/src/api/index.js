@@ -176,3 +176,27 @@ export const getEstScore = (flag, grade, Class, subject) => {
 		data: { flag, grade, Class, subject },
 	})
 }
+
+export const getGoodRate = (grade, Class, subject) => {
+	return request({
+		method: 'POST',
+		url: '/result/getGoodRate',
+		data: { grade, Class, subject },
+	})
+}
+
+export const getPassRate = (grade, Class, subject) => {
+	return request({
+		method: 'POST',
+		url: '/result/getPassRate',
+		data: { grade, Class, subject },
+	})
+}
+
+export const getScoreRange = (grade, Class, subject) => {
+	return request({
+		method: 'POST',
+		url: '/result/getScoreRange',
+		data: { grade, Class, subject },
+	})
+}

@@ -3,8 +3,7 @@ import { ref,
 	computed,
 	watch,
 	reactive,
-	onMounted,
-	watchEffect } from 'vue'
+	onMounted } from 'vue'
 import { useClassStore } from '../store/classMessage.js'
 import { CLASS_TRANSLATE,
 	CLASS_TRANSLATE_REVERSE,
@@ -14,7 +13,7 @@ import { CLASS_TRANSLATE,
 import { advantageResult,
 	advantageResultByGrade } from '../api/index.js'
 import * as echarts from 'echarts/core'
-import '../common/echartsUse.js'
+import { echartsInit } from '../common/echartsUse.js'
 
 const checkedGrade = ref(1)
 
@@ -77,11 +76,19 @@ const chartData = computed(() => {
 				name: perClass.value[index],
 				type: 'bar',
 				data: [total],
+				// label: {
+				// 	show: true,
+				// 	position: 'top',
+				// },
 			})
 			return {
 				name: perClass.value[index],
 				type: 'bar',
 				data: perCLassAdv,
+				// label: {
+				// 	show: true,
+				// 	position: 'top',
+				// },
 			}
 		},
 	)
@@ -109,6 +116,7 @@ const getAdvantageResult = (
 	loading.table = true
 	advantageResult(grade, Class, testTime)
 		.then(res => {
+			console.log(res)
 			!testTime && (resultAdv.value = res)
 			testTime && (resultNextAdv.value = res)
 		})
@@ -175,8 +183,8 @@ getAdvantageResult(
 )
 
 onMounted(() => {
-	myChart = echarts.init(chartRef.value)
-	totalChart = echarts.init(totalChartRef.value)
+	myChart = echartsInit(chartRef.value)
+	totalChart = echartsInit(totalChartRef.value)
 })
 
 watch(

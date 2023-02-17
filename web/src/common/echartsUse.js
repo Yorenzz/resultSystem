@@ -1,4 +1,5 @@
 import { use } from 'echarts/core'
+import * as echarts from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart,
 	LineChart,
@@ -28,3 +29,11 @@ use([
 	CustomChart,
 	RadarChart,
 ])
+
+export const echartsInit = (chartRef) => {
+	const chartInstance = echarts.init(chartRef)
+	window.addEventListener('resize', () => {
+		chartInstance.resize()
+	})
+	return chartInstance
+}

@@ -57,6 +57,7 @@ const route = useRoute()
       </template>
       <el-menu-item
         index="/result-information/edit-result"
+        disabled
       >
         查看&编辑
       </el-menu-item>
@@ -83,6 +84,7 @@ const route = useRoute()
       </el-menu-item>
       <el-menu-item
         index="/student-information/edit-information"
+        disabled
       >
         批量编辑
       </el-menu-item>

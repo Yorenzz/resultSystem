@@ -1,9 +1,11 @@
 <script setup>
 import { getClass } from './api/index.js'
 import { useClassStore } from './store/classMessage.js'
+import { userInfoStore } from './store/index.js'
 import { ref } from 'vue'
 
 const store = useClassStore()
+const userStore = userInfoStore()
 const fullscreenLoading = ref(false)
 const getPerClass = () => {
 	fullscreenLoading.value = true
@@ -29,7 +31,7 @@ const getPerClass = () => {
 		fullscreenLoading.value = false
 	})
 }
-getPerClass()
+userStore.username && getPerClass()
 </script>
 
 <template>
